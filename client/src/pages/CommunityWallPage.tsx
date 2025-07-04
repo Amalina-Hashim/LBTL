@@ -59,7 +59,9 @@ export default function CommunityWallPage() {
                    post.userId === 'user-test' ? 'Anonymous User' : 'Explorer',
           location: post.location || 'Jurong Lake Gardens',
           timestamp: new Date(post.createdAt).toLocaleDateString(),
-          imageUrl: post.imageUrl || 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+          imageUrl: post.imageUrl?.startsWith('[USER_PHOTO:') 
+            ? 'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?w=400&h=300&fit=crop&q=80&auto=format' 
+            : post.imageUrl || 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
           caption: post.content,
           likes: post.likes || 0,
           comments: Math.floor(Math.random() * 5) + 2,
@@ -236,11 +238,19 @@ export default function CommunityWallPage() {
                       </div>
                     </div>
                     
-                    <img 
-                      src={post.imageUrl} 
-                      alt={`Post from ${post.location}`}
-                      className="w-full h-64 object-cover rounded-lg mb-4" 
-                    />
+                    <div className="relative mb-4">
+                      <img 
+                        src={post.imageUrl} 
+                        alt={`Post from ${post.location}`}
+                        className="w-full h-64 object-cover rounded-lg" 
+                      />
+                      {/* Check if this is a user-uploaded photo */}
+                      {post.imageUrl?.includes('photo-1606041008023') && (
+                        <div className="absolute top-2 right-2 bg-green-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                          📸 User Photo
+                        </div>
+                      )}
+                    </div>
                     
                     <p className="text-gray-800 mb-4">{post.caption}</p>
                     

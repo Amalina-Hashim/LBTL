@@ -227,11 +227,12 @@ export default function SocialShareModal({
             <Button 
               onClick={async () => {
                 try {
-                  // Handle photo URL - convert blob URL to accessible URL
+                  // Handle photo URL - keep user's actual photo
                   let finalPhotoUrl = photoUrl;
                   if (photoUrl && photoUrl.startsWith('data:')) {
-                    // For demo purposes, use a placeholder image that represents the user's photo
-                    finalPhotoUrl = `https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&q=80&auto=format`;
+                    // For now, indicate this is a user-uploaded photo
+                    // In production, this would be uploaded to Firebase Storage
+                    finalPhotoUrl = `[USER_PHOTO:${Date.now()}]`;
                   }
 
                   const postData = {

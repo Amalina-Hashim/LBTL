@@ -112,7 +112,7 @@ export default function SocialShareModal({
     setIsSharing(true);
     
     // Create post content for community wall
-    const postContent = generatePostContent();
+    const postContent = generatePost('facebook'); // Use Facebook format for community posts
     
     // Create community post
     try {

@@ -100,6 +100,9 @@ Changelog:
 - July 04, 2025. Updated homepage images to feature Singapore's Jurong Lake Gardens and Singapore Botanic Gardens (NParks) instead of generic/foreign locations for better local relevance
 - July 04, 2025. Fixed navigation structure and map integration, added proper error handling for missing Firebase configuration
 - July 04, 2025. Updated map system to automatically use OneMap API when available, with OpenStreetMap fallback for demo mode
+- July 04, 2025. Implemented check-in data persistence system with edit/resubmit capabilities and completion state tracking
+- July 04, 2025. Enhanced social sharing to create community posts when users share achievements
+- July 04, 2025. Renamed all trail points to "Science Park Trail Challenge" format for better branding
 
 ## User Preferences
 

@@ -106,6 +106,7 @@ Changelog:
 - July 04, 2025. Added authentic Lights by the Lake event trail locations with projection mapping and special installations based on real NParks event data
 - July 04, 2025. Updated facility pins with accurate Jurong Lake Gardens locations including North/South Carparks, Clusia Cove toilet, Forest Ramble toilet, Japanese Garden toilet, Entrance Pavilion, and Water Lily Pavilion. Made facility icons smaller (24x24px) for better map visibility
 - July 04, 2025. Enhanced routing system to allow dual-mode functionality: users can plan walking routes AND explore pins normally after route creation. Added visual indicators, status guidance, and "New Route" button for seamless mode switching
+- July 04, 2025. Added comprehensive lantern festival multimedia content including authentic Creative Commons videos, audio, and images from Pexels and other legitimate sources. Enhanced all Science Park Trail challenges with lantern festival themes, traditional Chinese New Year content, dragon dances, floating lanterns, and cultural educational materials
 
 ## User Preferences
 

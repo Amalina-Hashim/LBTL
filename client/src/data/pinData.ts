@@ -30,20 +30,31 @@ export const pinData: PinData[] = [
     media: [
       {
         type: "video",
-        url: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
+        url: "https://videos.pexels.com/video-files/8085094/8085094-sd_640_360_25fps.mp4",
+        caption: "Beautiful red lanterns swaying in the breeze - traditional Chinese New Year decoration",
+        duration: 15
+      },
+      {
+        type: "video",
+        url: "https://videos.pexels.com/video-files/3194036/3194036-sd_640_360_25fps.mp4",
         caption: "Explore the traditional Chinese architecture and garden design",
         duration: 30
       },
       {
         type: "image", 
-        url: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80",
+        url: "https://images.pexels.com/photos/2064827/pexels-photo-2064827.jpeg?auto=compress&cs=tinysrgb&w=800",
+        caption: "Stunning red lanterns illuminating the night during Chinese New Year celebration"
+      },
+      {
+        type: "image", 
+        url: "https://images.pexels.com/photos/208701/pexels-photo-208701.jpeg?auto=compress&cs=tinysrgb&w=800",
         caption: "Traditional Chinese garden pagoda at sunset"
       },
       {
         type: "audio",
-        url: "https://www2.cs.uic.edu/~i101/SoundFiles/BabyElephantWalk60.wav",
-        caption: "Listen to traditional Chinese garden ambiance",
-        duration: 15
+        url: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav",
+        caption: "Traditional Chinese garden ambiance with gentle temple bells",
+        duration: 20
       }
     ],
     funFact: "Chinese gardens are designed to represent natural landscapes in miniature, with each element symbolizing harmony between humans and nature."
@@ -58,15 +69,26 @@ export const pinData: PinData[] = [
     completed: false,
     media: [
       {
+        type: "video",
+        url: "https://videos.pexels.com/video-files/7710243/7710243-sd_640_360_25fps.mp4",
+        caption: "Colorful lanterns floating on water during traditional lantern festival",
+        duration: 25
+      },
+      {
         type: "image",
-        url: "https://images.unsplash.com/photo-1480796927426-f609979314bd?w=800&q=80",
+        url: "https://images.pexels.com/photos/1677675/pexels-photo-1677675.jpeg?auto=compress&cs=tinysrgb&w=800",
+        caption: "Beautiful lantern festival display with traditional paper lanterns"
+      },
+      {
+        type: "image",
+        url: "https://images.pexels.com/photos/208701/pexels-photo-208701.jpeg?auto=compress&cs=tinysrgb&w=800",
         caption: "Traditional Japanese wooden bridge architecture"
       },
       {
-        type: "video",
-        url: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4",
-        caption: "Watch koi fish swimming beneath the bridge",
-        duration: 20
+        type: "audio",
+        url: "https://www.soundjay.com/misc/sounds/wind-chimes-1.wav",
+        caption: "Peaceful wind chimes and water sounds from the garden",
+        duration: 30
       }
     ],
     funFact: "Japanese garden bridges are built without nails, using traditional joinery techniques that have been passed down for centuries."
@@ -88,7 +110,27 @@ export const pinData: PinData[] = [
     lat: 1.3405,
     lng: 103.7240,
     type: "trail",
-    completed: false
+    completed: false,
+    media: [
+      {
+        type: "video",
+        url: "https://videos.pexels.com/video-files/3571264/3571264-sd_640_360_25fps.mp4",
+        caption: "Magnificent lantern festival celebration with thousands of colorful lanterns",
+        duration: 20
+      },
+      {
+        type: "image",
+        url: "https://images.pexels.com/photos/1983037/pexels-photo-1983037.jpeg?auto=compress&cs=tinysrgb&w=800",
+        caption: "Traditional Chinese lanterns creating magical atmosphere at night"
+      },
+      {
+        type: "audio",
+        url: "https://www.soundjay.com/misc/sounds/water-drop-1.wav",
+        caption: "Serene lake sounds with gentle water lapping",
+        duration: 25
+      }
+    ],
+    funFact: "Lantern festivals originated over 2,000 years ago during the Han Dynasty, symbolizing the return of spring and new beginnings."
   },
   {
     id: "5",
@@ -97,7 +139,32 @@ export const pinData: PinData[] = [
     lat: 1.3390,
     lng: 103.7280,
     type: "trail",
-    completed: false
+    completed: false,
+    media: [
+      {
+        type: "video",
+        url: "https://videos.pexels.com/video-files/7655277/7655277-sd_640_360_25fps.mp4",
+        caption: "Stunning sky lanterns floating up into the night sky during festival",
+        duration: 18
+      },
+      {
+        type: "image",
+        url: "https://images.pexels.com/photos/1983037/pexels-photo-1983037.jpeg?auto=compress&cs=tinysrgb&w=800",
+        caption: "Beautiful lotus pond with traditional lanterns reflected in water"
+      },
+      {
+        type: "image",
+        url: "https://images.pexels.com/photos/1677675/pexels-photo-1677675.jpeg?auto=compress&cs=tinysrgb&w=800",
+        caption: "Colorful paper lanterns hanging above lotus pond"
+      },
+      {
+        type: "audio",
+        url: "https://www.soundjay.com/misc/sounds/water-drop-2.wav",
+        caption: "Peaceful lotus pond with gentle water sounds and nature ambiance",
+        duration: 35
+      }
+    ],
+    funFact: "Lotus flowers bloom only during the day and close at night, symbolizing rebirth and purity in Chinese culture - perfect for lantern festivals celebrating new beginnings."
   },
   {
     id: "6",
@@ -116,7 +183,27 @@ export const pinData: PinData[] = [
     lat: 1.3398,
     lng: 103.7275,
     type: "trail",
-    completed: false
+    completed: false,
+    media: [
+      {
+        type: "video",
+        url: "https://videos.pexels.com/video-files/2064827/2064827-sd_640_360_25fps.mp4",
+        caption: "Traditional Chinese dragon dance performance during lantern festival",
+        duration: 22
+      },
+      {
+        type: "image",
+        url: "https://images.pexels.com/photos/1983037/pexels-photo-1983037.jpeg?auto=compress&cs=tinysrgb&w=800",
+        caption: "Enchanting bamboo grove illuminated by traditional red lanterns"
+      },
+      {
+        type: "audio",
+        url: "https://www.soundjay.com/misc/sounds/bamboo-wind-chimes.wav",
+        caption: "Relaxing bamboo grove sounds with gentle wind through leaves",
+        duration: 40
+      }
+    ],
+    funFact: "Bamboo symbolizes strength and flexibility in Chinese culture - it bends without breaking, representing resilience during life's challenges."
   },
   {
     id: "8",
@@ -125,7 +212,32 @@ export const pinData: PinData[] = [
     lat: 1.3410,
     lng: 103.7285,
     type: "trail",
-    completed: false
+    completed: false,
+    media: [
+      {
+        type: "video",
+        url: "https://videos.pexels.com/video-files/7655277/7655277-sd_640_360_25fps.mp4",
+        caption: "Spectacular aerial view of lantern festival with hundreds of floating lanterns",
+        duration: 30
+      },
+      {
+        type: "image",
+        url: "https://images.pexels.com/photos/1983037/pexels-photo-1983037.jpeg?auto=compress&cs=tinysrgb&w=800",
+        caption: "Panoramic view of entire gardens decorated with colorful lanterns"
+      },
+      {
+        type: "image",
+        url: "https://images.pexels.com/photos/2064827/pexels-photo-2064827.jpeg?auto=compress&cs=tinysrgb&w=800",
+        caption: "Breathtaking sunset view with traditional Chinese lanterns"
+      },
+      {
+        type: "audio",
+        url: "https://www.soundjay.com/misc/sounds/festival-crowd.wav",
+        caption: "Joyful festival atmosphere with distant music and celebration sounds",
+        duration: 45
+      }
+    ],
+    funFact: "The scenic overlook offers the best view of the entire Lantern Festival - historically, elevated viewing spots were reserved for nobility during imperial celebrations."
   },
   {
     id: "9",

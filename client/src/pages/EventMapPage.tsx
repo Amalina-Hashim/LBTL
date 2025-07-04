@@ -278,6 +278,36 @@ export default function EventMapPage() {
     trackAnalytics('vendor_rating', { pinId, rating, hasReview: !!review });
   };
 
+  const handleCelebrationPost = async (message: string, photoFile: File | null) => {
+    try {
+      // Create a community post for trail completion
+      const trailPins = pins.filter(p => p.type === 'trail');
+      await createPost({
+        type: 'completion',
+        content: message,
+        location: 'Science Park Trail - Jurong Lake Gardens',
+        imageFile: photoFile,
+        timestamp: new Date().toISOString(),
+        completedCount: trailPins.length,
+        totalCount: trailPins.length
+      });
+      
+      toast({
+        title: "Celebration Shared!",
+        description: "Your trail completion has been posted to the community wall.",
+      });
+      
+      setIsTrailCompletionOpen(false);
+    } catch (error) {
+      console.error('Error posting celebration:', error);
+      toast({
+        title: "Share Failed",
+        description: "Unable to post to community wall. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const completedCount = completedPins.size;
   const totalTrailPins = pins.filter(p => p.type === 'trail').length;
 
@@ -477,6 +507,15 @@ export default function EventMapPage() {
         onClose={() => setIsModalOpen(false)}
         onComplete={handlePinComplete}
         onRate={handlePinRate}
+      />
+
+      {/* Trail Completion Modal */}
+      <TrailCompletionModal
+        isOpen={isTrailCompletionOpen}
+        onClose={() => setIsTrailCompletionOpen(false)}
+        completedCount={pins.filter(p => p.type === 'trail' && p.completed).length}
+        totalCount={totalTrailPins}
+        onCelebrationPost={handleCelebrationPost}
       />
     </div>
   );

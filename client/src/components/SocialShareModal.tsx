@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -66,7 +66,21 @@ export default function SocialShareModal({
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [isSharing, setIsSharing] = useState(false);
   const [sharedPlatforms, setSharedPlatforms] = useState<string[]>([]);
+  const [currentReview, setCurrentReview] = useState(review);
   const { toast } = useToast();
+
+  // Initialize with default completion message if no review provided
+  useEffect(() => {
+    if (!review || review.trim() === '') {
+      if (postType === 'completion' || !postType) {
+        setCurrentReview(`Just completed ${locationName}! 🎯 Amazing trail challenge experience!`);
+      } else if (postType === 'rating') {
+        setCurrentReview(`Rated ${locationName} ${'⭐'.repeat(rating)} - Great experience!`);
+      }
+    } else {
+      setCurrentReview(review);
+    }
+  }, [review, postType, locationName, rating]);
 
   const generatePost = (platform: string) => {
     const hashtags = '#LightsByTheLake #JurongLakeGardens #NParks #Singapore #NatureExplorer';
@@ -160,6 +174,20 @@ export default function SocialShareModal({
         </DialogHeader>
 
         <div className="space-y-4">
+          {/* Message Input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Your Message
+            </label>
+            <textarea
+              value={currentReview}
+              onChange={(e) => setCurrentReview(e.target.value)}
+              placeholder="Share your experience..."
+              className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              rows={3}
+            />
+          </div>
+
           {/* Preview Card */}
           <Card className="border-2 border-primary/20">
             <CardContent className="p-4">
@@ -183,7 +211,7 @@ export default function SocialShareModal({
                     </span>
                   </div>
                   <p className="text-sm text-gray-800 mb-2">
-                    {review}
+                    {currentReview}
                   </p>
                   {photoUrl && (
                     <div className="mb-2">
@@ -222,8 +250,8 @@ export default function SocialShareModal({
                     console.log('Photo URL does not start with data:', photoUrl);
                   }
 
-                  // Create appropriate content based on post type and review
-                  let postContent = review;
+                  // Create appropriate content based on post type and current review
+                  let postContent = currentReview;
                   if (!postContent || postContent.trim() === '') {
                     if (postType === 'completion' || !postType) {
                       postContent = `Just completed ${locationName}! 🎯 Amazing trail challenge experience!`;

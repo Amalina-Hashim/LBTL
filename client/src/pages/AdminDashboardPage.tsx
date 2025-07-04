@@ -28,16 +28,23 @@ export default function AdminDashboardPage() {
   const [ratings, setRatings] = useState<AdminRating[]>([]);
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState({
-    pageViews: 2341,
-    activeUsers: 1247,
-    qrScans: 3892,
-    photoUploads: 856
+    totalVisits: 0,
+    photosTaken: 0,
+    reviewsLeft: 0,
+    participants: 0
   });
   const { toast } = useToast();
 
   useEffect(() => {
     loadData();
     trackAnalytics('page_view', { page: 'admin_dashboard' });
+    
+    // Auto-refresh data every 30 seconds
+    const interval = setInterval(() => {
+      loadData();
+    }, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const loadData = async () => {
@@ -49,6 +56,9 @@ export default function AdminDashboardPage() {
       
       setPosts(postsData as AdminPost[]);
       setRatings(ratingsData as AdminRating[]);
+      
+      // Calculate dynamic analytics from real data
+      calculateAnalytics(postsData, ratingsData);
     } catch (error) {
       console.error('Error loading admin data:', error);
       // For demo purposes, show sample data when Firebase is not configured
@@ -56,6 +66,33 @@ export default function AdminDashboardPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const calculateAnalytics = (postsData: any[], ratingsData: any[]) => {
+    // Get localStorage data for additional metrics
+    const participantCount = parseInt(localStorage.getItem('participantCount') || '0');
+    const completedPins = JSON.parse(localStorage.getItem('completedPins') || '[]');
+    const completionPhotos = JSON.parse(localStorage.getItem('completionPhotos') || '{}');
+    
+    // Count photos taken (from completion photos + posts with images)
+    const completionPhotoCount = Object.keys(completionPhotos).length;
+    const postPhotoCount = postsData.filter(post => post.imageUrl && post.imageUrl !== null).length;
+    const totalPhotos = completionPhotoCount + postPhotoCount;
+    
+    // Count reviews (event ratings + vendor ratings)
+    const eventRatings = JSON.parse(localStorage.getItem('eventRatings') || '[]');
+    const vendorReviews = ratingsData.filter(rating => rating.review && rating.review.trim().length > 0);
+    const totalReviews = eventRatings.length + vendorReviews.length;
+    
+    // Total visits = participants (trail clicks) + completion count
+    const totalVisits = participantCount + completedPins.length;
+    
+    setAnalytics({
+      totalVisits,
+      photosTaken: totalPhotos,
+      reviewsLeft: totalReviews,
+      participants: participantCount
+    });
   };
 
   const setSampleData = () => {
@@ -97,6 +134,7 @@ export default function AdminDashboardPage() {
 
     setPosts(samplePosts);
     setRatings(sampleRatings);
+    calculateAnalytics(samplePosts, sampleRatings);
   };
 
   const handleDeletePost = async (postId: string) => {
@@ -223,8 +261,8 @@ export default function AdminDashboardPage() {
                   <Eye className="text-white w-6 h-6" />
                 </div>
                 <div className="ml-4">
-                  <div className="text-2xl font-bold text-gray-900">{analytics.pageViews}</div>
-                  <div className="text-sm text-gray-600">Page Views</div>
+                  <div className="text-2xl font-bold text-gray-900">{analytics.totalVisits}</div>
+                  <div className="text-sm text-gray-600">Total Visits</div>
                 </div>
               </div>
             </CardContent>
@@ -237,8 +275,8 @@ export default function AdminDashboardPage() {
                   <Users className="text-white w-6 h-6" />
                 </div>
                 <div className="ml-4">
-                  <div className="text-2xl font-bold text-gray-900">{analytics.activeUsers}</div>
-                  <div className="text-sm text-gray-600">Active Users</div>
+                  <div className="text-2xl font-bold text-gray-900">{analytics.participants}</div>
+                  <div className="text-sm text-gray-600">Participants</div>
                 </div>
               </div>
             </CardContent>
@@ -248,11 +286,11 @@ export default function AdminDashboardPage() {
             <CardContent className="p-6">
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
-                  <QrCode className="text-white w-6 h-6" />
+                  <Camera className="text-white w-6 h-6" />
                 </div>
                 <div className="ml-4">
-                  <div className="text-2xl font-bold text-gray-900">{analytics.qrScans}</div>
-                  <div className="text-sm text-gray-600">QR Scans</div>
+                  <div className="text-2xl font-bold text-gray-900">{analytics.photosTaken}</div>
+                  <div className="text-sm text-gray-600">Photos Taken</div>
                 </div>
               </div>
             </CardContent>
@@ -262,11 +300,11 @@ export default function AdminDashboardPage() {
             <CardContent className="p-6">
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
-                  <Camera className="text-white w-6 h-6" />
+                  <Star className="text-white w-6 h-6" />
                 </div>
                 <div className="ml-4">
-                  <div className="text-2xl font-bold text-gray-900">{analytics.photoUploads}</div>
-                  <div className="text-sm text-gray-600">Photos Uploaded</div>
+                  <div className="text-2xl font-bold text-gray-900">{analytics.reviewsLeft}</div>
+                  <div className="text-sm text-gray-600">Reviews Left</div>
                 </div>
               </div>
             </CardContent>

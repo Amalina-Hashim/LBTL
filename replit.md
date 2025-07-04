@@ -116,6 +116,7 @@ Changelog:
 - July 04, 2025. Created comprehensive Completed Challenges page (/completed) with photo display and real-time timestamps. Made completion counter clickable to navigate to dedicated page showing all completed trail challenges as cards with completion photos, timestamps, and challenge details. Enhanced completion flow to save photo references and timestamps to localStorage for persistence
 - July 04, 2025. Updated event dates from "Dec 15 - Jan 15, 2024" to "27 Sep - 12 Oct 2025" throughout the application
 - July 04, 2025. Implemented dynamic participant numbers and ratings system based on actual app usage: participant count tracks trail challenge clicks, average rating calculates from event ratings submitted within the app. Added analytics tracking routes with localStorage fallback for persistent statistics across sessions
+- July 04, 2025. Enhanced AdminDashboardPage with dynamic analytics tracking actual user activities: Total Visits (from trail visitors + completions), Photos Taken (from completion photos + community posts), Reviews Left (from event ratings + vendor reviews), Participants (trail challenge clicks). Dashboard auto-refreshes every 30 seconds to show real-time statistics
 
 ## User Preferences
 

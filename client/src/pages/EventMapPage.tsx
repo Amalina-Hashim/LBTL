@@ -354,7 +354,6 @@ export default function EventMapPage() {
         type: 'rating',
         content: review || `Rated the Lights by the Lake event ${rating} stars! 🌟`,
         location: 'Lights by the Lake - Jurong Lake Gardens',
-        imageUrl: null,
         rating: rating,
         likes: 0
       };

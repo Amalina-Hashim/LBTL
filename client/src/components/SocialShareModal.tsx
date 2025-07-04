@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Facebook, Instagram, Twitter, Share2, Star, MapPin, Calendar, Check } from 'lucide-react';
+import { useLocation } from 'wouter';
 
 interface SocialShareModalProps {
   isOpen: boolean;
@@ -68,6 +69,7 @@ export default function SocialShareModal({
   const [sharedPlatforms, setSharedPlatforms] = useState<string[]>([]);
   const [currentReview, setCurrentReview] = useState(review);
   const { toast } = useToast();
+  const [location, setLocation] = useLocation();
 
   // Initialize with default completion message if no review provided
   useEffect(() => {
@@ -290,9 +292,10 @@ export default function SocialShareModal({
                     });
                   }
                   
-                  // Close modal after sharing
+                  // Close modal and navigate to Community Wall after sharing
                   setTimeout(() => {
                     onClose();
+                    setLocation('/community');
                   }, 1500);
                 } catch (error) {
                   console.error('Error posting to community:', error);

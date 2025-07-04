@@ -75,7 +75,7 @@ export default function CommunityWallPage() {
         }));
         
         // Debug logging
-        console.log('Latest post content:', response.posts[0]?.content);
+        console.log('Latest post content:', apiPosts.posts[0]?.content);
         console.log('Formatted latest post caption:', formattedPosts[0]?.caption);
         
         setPosts(formattedPosts.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()));

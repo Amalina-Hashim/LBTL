@@ -39,19 +39,36 @@ export default function EventMapPage() {
   const { toast } = useToast();
 
   // Calculate dynamic stats from real user data
-  const updateStats = useCallback(() => {
+  const updateStats = useCallback(async () => {
     // Get localStorage data
     const participantCount = parseInt(localStorage.getItem('participantCount') || '0');
     const completedPins = JSON.parse(localStorage.getItem('completedPins') || '[]');
     const completionPhotos = JSON.parse(localStorage.getItem('completionPhotos') || '{}');
     const eventRatings = JSON.parse(localStorage.getItem('eventRatings') || '[]');
     
+    // Fetch posts to count all reviews (event + vendor ratings)
+    let totalRatings = eventRatings.length;
+    try {
+      const response = await fetch('/api/posts');
+      if (response.ok) {
+        const { posts } = await response.json();
+        // Count posts that are ratings (have rating field)
+        const ratingPosts = posts.filter((post: any) => post.rating !== null && post.rating !== undefined);
+        totalRatings = ratingPosts.length;
+        console.log('Rating posts found:', ratingPosts.length, 'Event ratings:', eventRatings.length);
+        console.log('Posts with ratings:', ratingPosts.map(p => ({ content: p.content, rating: p.rating })));
+      }
+    } catch (error) {
+      // Fallback to localStorage if API fails
+      console.log('Using localStorage fallback for ratings count:', totalRatings);
+    }
+    
     // Calculate stats
     const completionPhotoCount = Object.keys(completionPhotos).length;
     const totalVisits = participantCount + completedPins.length;
     const totalPhotos = completionPhotoCount;
-    const totalRatings = eventRatings.length;
     
+    console.log('Setting stats - Visits:', totalVisits, 'Photos:', totalPhotos, 'Ratings:', totalRatings);
     setStats({
       visits: totalVisits,
       photos: totalPhotos,

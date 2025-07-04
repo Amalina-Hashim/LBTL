@@ -117,6 +117,7 @@ Changelog:
 - July 04, 2025. Updated event dates from "Dec 15 - Jan 15, 2024" to "27 Sep - 12 Oct 2025" throughout the application
 - July 04, 2025. Implemented dynamic participant numbers and ratings system based on actual app usage: participant count tracks trail challenge clicks, average rating calculates from event ratings submitted within the app. Added analytics tracking routes with localStorage fallback for persistent statistics across sessions
 - July 04, 2025. Enhanced AdminDashboardPage with dynamic analytics tracking actual user activities: Total Visits (from trail visitors + completions), Photos Taken (from completion photos + community posts), Reviews Left (from event ratings + vendor reviews), Participants (trail challenge clicks). Dashboard auto-refreshes every 30 seconds to show real-time statistics
+- July 04, 2025. Made EventMapPage stats bar dynamic - bottom stats (Total Visits, Photos Taken, Reviews Left) now update based on real user activities: trail interactions, completion photos, and event ratings. Stats auto-refresh every 10 seconds and update immediately when users complete activities
 
 ## User Preferences
 

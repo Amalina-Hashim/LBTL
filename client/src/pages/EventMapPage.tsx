@@ -24,9 +24,9 @@ export default function EventMapPage() {
   const [showPrizeBanner, setShowPrizeBanner] = useState(false);
   const [pinMarkers, setPinMarkers] = useState<Map<string, L.Marker>>(new Map());
   const [stats, setStats] = useState({
-    visits: 23,
-    photos: 15,
-    ratings: 8
+    visits: 0,
+    photos: 0,
+    ratings: 0
   });
   const [routingMode, setRoutingMode] = useState(false);
   const [routeCreated, setRouteCreated] = useState(false);
@@ -37,6 +37,27 @@ export default function EventMapPage() {
   const [startMarker, setStartMarker] = useState<L.Marker | null>(null);
   const [endMarker, setEndMarker] = useState<L.Marker | null>(null);
   const { toast } = useToast();
+
+  // Calculate dynamic stats from real user data
+  const updateStats = useCallback(() => {
+    // Get localStorage data
+    const participantCount = parseInt(localStorage.getItem('participantCount') || '0');
+    const completedPins = JSON.parse(localStorage.getItem('completedPins') || '[]');
+    const completionPhotos = JSON.parse(localStorage.getItem('completionPhotos') || '{}');
+    const eventRatings = JSON.parse(localStorage.getItem('eventRatings') || '[]');
+    
+    // Calculate stats
+    const completionPhotoCount = Object.keys(completionPhotos).length;
+    const totalVisits = participantCount + completedPins.length;
+    const totalPhotos = completionPhotoCount;
+    const totalRatings = eventRatings.length;
+    
+    setStats({
+      visits: totalVisits,
+      photos: totalPhotos,
+      ratings: totalRatings
+    });
+  }, []);
 
   // Track trail starts for participant analytics
   const trackTrailStart = async () => {
@@ -52,11 +73,17 @@ export default function EventMapPage() {
       // Also track in localStorage as backup
       const currentParticipants = parseInt(localStorage.getItem('participantCount') || '0');
       localStorage.setItem('participantCount', (currentParticipants + 1).toString());
+      
+      // Update stats after tracking
+      updateStats();
     } catch (error) {
       console.error('Failed to track trail start:', error);
       // Fallback to localStorage only
       const currentParticipants = parseInt(localStorage.getItem('participantCount') || '0');
       localStorage.setItem('participantCount', (currentParticipants + 1).toString());
+      
+      // Update stats after tracking
+      updateStats();
     }
   };
 
@@ -80,7 +107,19 @@ export default function EventMapPage() {
     );
     
     console.log('Initialized completed pins from storage:', allCompletedPins);
-  }, []);
+    
+    // Initialize stats
+    updateStats();
+  }, [updateStats]);
+
+  // Auto-refresh stats every 10 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateStats();
+    }, 10000);
+    
+    return () => clearInterval(interval);
+  }, [updateStats]);
 
   // Update map markers when pin completion status changes
   useEffect(() => {
@@ -377,6 +416,9 @@ export default function EventMapPage() {
     });
 
     trackAnalytics('pin_complete', { pinId, hasPhoto: !!photoFile });
+    
+    // Update stats after completion (especially for photos)
+    updateStats();
   };
 
   const handlePinRate = (pinId: string, rating: number, review: string) => {
@@ -540,6 +582,9 @@ export default function EventMapPage() {
       const currentRatings = JSON.parse(localStorage.getItem('eventRatings') || '[]');
       currentRatings.push(rating);
       localStorage.setItem('eventRatings', JSON.stringify(currentRatings));
+      
+      // Update stats after rating
+      updateStats();
 
       // Create a post for the event rating
       const postData = {

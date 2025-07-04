@@ -271,28 +271,31 @@ export default function CommunityWallPage() {
                       </div>
                     </div>
                     
-                    <div className="relative mb-4">
-                      {post.imageUrl ? (
-                        <div className="relative">
-                          <img 
-                            src={post.imageUrl} 
-                            alt={`Post from ${post.location}`}
-                            className="w-full h-64 object-cover rounded-lg" 
-                          />
-                          {/* User photo badge - removed per user request */}
-                        </div>
-                      ) : (
-                        <div className="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <div className="text-gray-400">No image</div>
-                        </div>
-                      )}
-                      {/* Legacy badge code - remove this section */}
-                      {false && (
-                        <div className="absolute top-2 right-2 bg-green-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                          📸 User Photo
-                        </div>
-                      )}
-                    </div>
+                    {/* Only show images for non-rating posts */}
+                    {post.type !== 'rating' && (
+                      <div className="relative mb-4">
+                        {post.imageUrl ? (
+                          <div className="relative">
+                            <img 
+                              src={post.imageUrl} 
+                              alt={`Post from ${post.location}`}
+                              className="w-full h-64 object-cover rounded-lg" 
+                            />
+                            {/* User photo badge - removed per user request */}
+                          </div>
+                        ) : (
+                          <div className="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <div className="text-gray-400">No image</div>
+                          </div>
+                        )}
+                        {/* Legacy badge code - remove this section */}
+                        {false && (
+                          <div className="absolute top-2 right-2 bg-green-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                            📸 User Photo
+                          </div>
+                        )}
+                      </div>
+                    )}
                     
                     <p className="text-gray-800 mb-4">{post.caption}</p>
                     

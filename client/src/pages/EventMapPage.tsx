@@ -280,22 +280,46 @@ export default function EventMapPage() {
 
   const handleCelebrationPost = async (message: string, photoFile: File | null) => {
     try {
-      // Create a community post for trail completion
-      const trailPins = pins.filter(p => p.type === 'trail');
-      await createPost({
-        type: 'completion',
+      // Create a community post for trail completion via API
+      const postData = {
+        userId: 'user-current',
+        type: 'achievement',
         content: message,
         location: 'Science Park Trail - Jurong Lake Gardens',
-        imageFile: photoFile,
-        timestamp: new Date().toISOString(),
-        completedCount: trailPins.length,
-        totalCount: trailPins.length
+        imageUrl: photoFile ? 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400' : null,
+        likes: 0
+      };
+
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
       });
-      
-      toast({
-        title: "Celebration Shared!",
-        description: "Your trail completion has been posted to the community wall.",
-      });
+
+      if (response.ok) {
+        toast({
+          title: "Celebration Shared!",
+          description: "Your trail completion has been posted to the community wall.",
+        });
+      } else {
+        // Fallback to Firebase
+        await createPost({
+          type: 'completion',
+          content: message,
+          location: 'Science Park Trail - Jurong Lake Gardens',
+          imageFile: photoFile,
+          timestamp: new Date().toISOString(),
+          completedCount: pins.filter(p => p.type === 'trail').length,
+          totalCount: pins.filter(p => p.type === 'trail').length
+        });
+        
+        toast({
+          title: "Celebration Shared!",
+          description: "Your trail completion has been posted to the community wall.",
+        });
+      }
       
       setIsTrailCompletionOpen(false);
     } catch (error) {

@@ -33,8 +33,31 @@ export default function CommunityWallPage() {
 
   const loadPosts = async () => {
     try {
-      const fetchedPosts = await getPosts(20);
-      setPosts(fetchedPosts as CommunityPost[]);
+      // Fetch from API endpoint first
+      const response = await fetch('/api/posts');
+      if (response.ok) {
+        const apiPosts = await response.json();
+        const formattedPosts = apiPosts.map((post: any) => ({
+          id: post.id,
+          username: post.userId === 'user-demo' ? 'TrailExplorer' : 
+                   post.userId === 'user-alice' ? 'AliceWanders' :
+                   post.userId === 'user-bob' ? 'BobAdventures' :
+                   post.userId === 'user-carol' ? 'CarolTrails' :
+                   post.userId === 'user-david' ? 'DavidEats' : 'Explorer',
+          location: post.location || 'Jurong Lake Gardens',
+          timestamp: new Date(post.createdAt).toLocaleDateString(),
+          imageUrl: post.imageUrl || 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+          caption: post.content,
+          likes: post.likes || 0,
+          comments: Math.floor(Math.random() * 5) + 2,
+          createdAt: new Date(post.createdAt),
+        }));
+        setPosts(formattedPosts.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()));
+      } else {
+        // Fallback to Firebase if API fails
+        const fetchedPosts = await getPosts(20);
+        setPosts(fetchedPosts as CommunityPost[]);
+      }
     } catch (error) {
       console.error('Error loading posts:', error);
       // For demo purposes, show sample posts when Firebase is not configured

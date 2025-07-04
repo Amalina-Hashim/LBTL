@@ -1,6 +1,60 @@
 import { z } from "zod";
+import { pgTable, text, boolean, integer, timestamp, real } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
-// Pin/Location schemas
+// Database Tables
+export const pins = pgTable("pins", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  lat: real("lat").notNull(),
+  lng: real("lng").notNull(),
+  type: text("type").notNull(),
+  completed: boolean("completed").default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const users = pgTable("users", {
+  id: text("id").primaryKey(),
+  uid: text("uid").notNull().unique(),
+  username: text("username"),
+  completedPins: text("completed_pins").array().default([]),
+  totalPhotos: integer("total_photos").default(0),
+  totalRatings: integer("total_ratings").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const posts = pgTable("posts", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  type: text("type").notNull(),
+  content: text("content").notNull(),
+  location: text("location"),
+  imageUrl: text("image_url"),
+  pinId: text("pin_id"),
+  rating: integer("rating"),
+  likes: integer("likes").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const ratings = pgTable("ratings", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  pinId: text("pin_id").notNull(),
+  rating: integer("rating").notNull(),
+  review: text("review"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const analytics = pgTable("analytics", {
+  id: text("id").primaryKey(),
+  eventType: text("event_type").notNull(),
+  data: text("data"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Zod Schemas
 export const pinSchema = z.object({
   id: z.string(),
   name: z.string(),

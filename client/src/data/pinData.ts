@@ -4,7 +4,7 @@ export interface PinData {
   description: string;
   lat: number;
   lng: number;
-  type: 'trail' | 'vendor' | 'facility';
+  type: 'trail' | 'vendor' | 'facility' | 'event';
   completed: boolean;
   vendorName?: string;
 }
@@ -102,5 +102,32 @@ export const pinData: PinData[] = [
     type: "vendor",
     completed: false,
     vendorName: "Laksa Paradise"
+  },
+  {
+    id: "11",
+    name: "Lights by the Lake - Cloud Pagoda Projection",
+    description: "Experience the 'Mid-Autumn Symphony' projection mapping every 30 minutes from 7:30-9:30 PM",
+    lat: 1.3388,
+    lng: 103.7260,
+    type: "event",
+    completed: false
+  },
+  {
+    id: "12", 
+    name: "Lights by the Lake - Dragon Phoenix Bridge",
+    description: "Walk through the illuminated White Rainbow Bridge transformed with dragon and phoenix lanterns",
+    lat: 1.3392,
+    lng: 103.7268,
+    type: "event",
+    completed: false
+  },
+  {
+    id: "13",
+    name: "Lights by the Lake - Japanese Garden Sunken Garden",
+    description: "Discover the 'Everglow' installation blending nature and technology with mist and lighting effects",
+    lat: 1.3396,
+    lng: 103.7273,
+    type: "event", 
+    completed: false
   }
 ];

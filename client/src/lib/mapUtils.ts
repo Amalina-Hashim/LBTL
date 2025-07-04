@@ -13,6 +13,9 @@ export const createCustomIcon = (type: string, completed: boolean = false) => {
   } else if (type === 'facility') {
     iconColor = '#8b5cf6'; // Purple for facilities
     iconClass = 'fas fa-info-circle';
+  } else if (type === 'event') {
+    iconColor = '#2563eb'; // Blue for event locations
+    iconClass = 'fas fa-star';
   }
 
   return L.divIcon({

@@ -103,6 +103,7 @@ Changelog:
 - July 04, 2025. Implemented check-in data persistence system with edit/resubmit capabilities and completion state tracking
 - July 04, 2025. Enhanced social sharing to create community posts when users share achievements
 - July 04, 2025. Renamed all trail points to "Science Park Trail Challenge" format for better branding
+- July 04, 2025. Added authentic Lights by the Lake event trail locations with projection mapping and special installations based on real NParks event data
 
 ## User Preferences
 

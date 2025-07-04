@@ -179,7 +179,7 @@ export default function EventMapPage() {
             <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
               <div className="flex items-center">
                 <div className="w-3 h-3 sm:w-4 sm:h-4 bg-primary rounded-full mr-1 sm:mr-2"></div>
-                <span className="truncate">Trail Points</span>
+                <span className="truncate">Science Park Trail Challenge</span>
               </div>
               <div className="flex items-center">
                 <div className="w-3 h-3 sm:w-4 sm:h-4 bg-yellow-500 rounded-full mr-1 sm:mr-2"></div>
@@ -192,6 +192,10 @@ export default function EventMapPage() {
               <div className="flex items-center">
                 <div className="w-3 h-3 sm:w-4 sm:h-4 bg-purple-500 rounded-full mr-1 sm:mr-2"></div>
                 <span className="truncate">Facilities</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-blue-600 rounded-full mr-1 sm:mr-2"></div>
+                <span className="truncate">Lights by the Lake Events</span>
               </div>
             </div>
           </CardContent>

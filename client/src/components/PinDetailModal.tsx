@@ -14,7 +14,7 @@ interface PinData {
   description: string;
   lat: number;
   lng: number;
-  type: 'trail' | 'vendor' | 'facility';
+  type: 'trail' | 'vendor' | 'facility' | 'event';
   completed: boolean;
   vendorName?: string;
 }
@@ -358,6 +358,26 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
                   <Button onClick={handleClose} className="w-full">
                     <Check className="w-4 h-4 mr-2" />
                     Got it
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {pin.type === 'event' && (
+            <Card className="border-blue-200 bg-blue-50">
+              <CardContent className="p-4">
+                <div className="text-center">
+                  <div className="text-4xl mb-3">🌟</div>
+                  <h3 className="font-semibold text-blue-800 mb-2">Special Event Location</h3>
+                  <p className="text-blue-700 mb-4">{pin.description}</p>
+                  <div className="bg-blue-100 p-3 rounded-lg mb-4">
+                    <p className="text-sm text-blue-800 font-medium">🎊 Lights by the Lake Event</p>
+                    <p className="text-xs text-blue-600 mt-1">Check event schedule for show times</p>
+                  </div>
+                  <Button onClick={handleClose} className="w-full bg-blue-600 hover:bg-blue-700">
+                    <Star className="w-4 h-4 mr-2" />
+                    Experience This Location
                   </Button>
                 </div>
               </CardContent>

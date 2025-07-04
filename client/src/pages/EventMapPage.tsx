@@ -38,6 +38,12 @@ export default function EventMapPage() {
   const [endMarker, setEndMarker] = useState<L.Marker | null>(null);
   const { toast } = useToast();
 
+  // Initialize completed pins from pin data
+  useEffect(() => {
+    const completedPinIds = pins.filter(pin => pin.completed).map(pin => pin.id);
+    setCompletedPins(new Set(completedPinIds));
+  }, []);
+
   useEffect(() => {
     // Initialize map when component mounts
     const initMap = () => {
@@ -232,12 +238,14 @@ export default function EventMapPage() {
 
 
   const handlePinComplete = (pinId: string, photoFile: File | null) => {
+    // Update pins state to mark as completed
     setPins(prevPins => 
       prevPins.map(pin => 
         pin.id === pinId ? { ...pin, completed: true } : pin
       )
     );
     
+    // Update completed pins set
     setCompletedPins(prev => {
       const newSet = new Set(prev);
       newSet.add(pinId);
@@ -251,23 +259,20 @@ export default function EventMapPage() {
       photos: photoFile ? prev.photos + 1 : prev.photos
     }));
 
-    // Update pins state to mark as completed
-    setPins(prev => prev.map(p => 
-      p.id === pinId ? { ...p, completed: true } : p
-    ));
-
     // Update map marker to yellow
     const marker = pinMarkers.get(pinId);
     if (marker) {
-      const pin = pins.find(p => p.id === pinId);
-      if (pin) {
-        updatePinMarker(marker, { ...pin, completed: true });
+      const currentPin = pins.find(p => p.id === pinId);
+      if (currentPin) {
+        updatePinMarker(marker, { ...currentPin, completed: true });
       }
     }
 
     // Check if all trail pins are completed
     const trailPins = pins.filter(p => p.type === 'trail');
-    const completedTrailPins = trailPins.filter(p => completedPins.has(p.id) || p.id === pinId);
+    const newCompletedPins = new Set(completedPins);
+    newCompletedPins.add(pinId);
+    const completedTrailPins = trailPins.filter(p => newCompletedPins.has(p.id));
     
     if (completedTrailPins.length >= trailPins.length) {
       setShowPrizeBanner(true);
@@ -279,9 +284,6 @@ export default function EventMapPage() {
       title: "Check-in Complete!",
       description: "Great job! Location marked as visited.",
     });
-
-    // Note: Community posting is now handled by user choice in "Share Achievement" modal
-    // This allows users to control when and how they share their completions
 
     trackAnalytics('pin_complete', { pinId, hasPhoto: !!photoFile });
   };

@@ -250,17 +250,23 @@ export default function EventMapPage() {
 
 
   const handlePinComplete = (pinId: string, photoFile: File | null) => {
+    console.log('handlePinComplete called for pinId:', pinId);
+    
     // Update pins state to mark as completed
-    setPins(prevPins => 
-      prevPins.map(pin => 
+    setPins(prevPins => {
+      console.log('Updating pins array, marking pin as completed:', pinId);
+      const updatedPins = prevPins.map(pin => 
         pin.id === pinId ? { ...pin, completed: true } : pin
-      )
-    );
+      );
+      console.log('Updated pins array:', updatedPins.filter(p => p.type === 'trail').map(p => ({ id: p.id, completed: p.completed })));
+      return updatedPins;
+    });
     
     // Update completed pins set
     setCompletedPins(prev => {
       const newSet = new Set(prev);
       newSet.add(pinId);
+      console.log('Updated completedPins set:', Array.from(newSet));
       return newSet;
     });
     
@@ -504,8 +510,12 @@ export default function EventMapPage() {
     }
   };
 
-  const completedCount = completedPins.size;
-  const totalTrailPins = pins.filter(p => p.type === 'trail').length;
+  const trailPins = pins.filter(p => p.type === 'trail');
+  const completedCount = pins.filter(p => p.type === 'trail' && p.completed).length;
+  const totalTrailPins = trailPins.length;
+  
+  console.log('Trail pins completion status:', trailPins.map(p => ({ id: p.id, name: p.name, completed: p.completed })));
+  console.log('Completed count:', completedCount, 'Total trail pins:', totalTrailPins);
 
   return (
     <div className="min-h-screen">

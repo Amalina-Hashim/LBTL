@@ -111,7 +111,33 @@ export default function SocialShareModal({
 
     setIsSharing(true);
     
-    // Simulate sharing delay
+    // Create post content for community wall
+    const postContent = generatePostContent();
+    
+    // Create community post
+    try {
+      const { createPost } = await import('@/lib/firebase');
+      await createPost({
+        username: userName || 'Trail Explorer',
+        location: locationName,
+        imageUrl: photoUrl || '',
+        caption: postContent,
+        likes: 0,
+        comments: 0,
+        userId: 'anonymous', // Since we're using anonymous auth
+        createdAt: new Date(),
+      });
+      
+      toast({
+        title: "Posted to Community!",
+        description: "Your achievement has been shared with the community.",
+      });
+    } catch (error) {
+      console.error('Error creating community post:', error);
+      // Continue with social media simulation even if community post fails
+    }
+    
+    // Simulate sharing delay for social platforms
     for (const platform of selectedPlatforms) {
       await new Promise(resolve => setTimeout(resolve, 1000));
       setSharedPlatforms(prev => [...prev, platform]);

@@ -142,6 +142,11 @@ export function registerRoutes(app: Express) {
   });
 
   app.post("/api/posts", async (req: Request, res: Response) => {
+    console.log('POST /api/posts endpoint hit');
+    console.log('Request headers:', req.headers);
+    console.log('Request body:', req.body);
+    console.log('Request content-type:', req.get('content-type'));
+    
     try {
       const postData = req.body;
       console.log('Creating post with data:', postData);

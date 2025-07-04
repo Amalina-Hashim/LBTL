@@ -358,6 +358,9 @@ export default function EventMapPage() {
         likes: 0
       };
 
+      console.log('Attempting to post event rating:', postData);
+      console.log('Request URL:', window.location.origin + '/api/posts');
+
       const response = await fetch('/api/posts', {
         method: 'POST',
         headers: {
@@ -366,21 +369,37 @@ export default function EventMapPage() {
         body: JSON.stringify(postData),
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+
       if (response.ok) {
+        const responseData = await response.json();
+        console.log('Success response:', responseData);
         toast({
           title: "Rating Shared!",
           description: "Your event rating has been posted to the community wall.",
         });
       } else {
-        const errorData = await response.json();
+        const errorText = await response.text();
+        console.error('Error response text:', errorText);
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch (e) {
+          errorData = { error: errorText };
+        }
         console.error('Server error:', errorData);
-        throw new Error(`Server error: ${response.status} - ${errorData.error}`);
+        throw new Error(`Server error: ${response.status} - ${errorData.error || errorText}`);
       }
     } catch (error) {
-      console.error('Error posting event rating:', error);
+      console.error('Full error details:', error);
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        console.error('Network error - fetch failed');
+      }
       toast({
-        title: "Rating Saved",
-        description: "Your rating has been recorded locally.",
+        title: "Error posting rating",
+        description: "Please check the console for details.",
+        variant: "destructive",
       });
     }
   };

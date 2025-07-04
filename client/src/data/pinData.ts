@@ -40,7 +40,7 @@ export const pinData: PinData[] = [
       },
       {
         type: "video",
-        url: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
+        url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
         caption: "🎬 Beautiful red lanterns swaying in the breeze during Chinese New Year festival",
         duration: 15
       }
@@ -68,7 +68,7 @@ export const pinData: PinData[] = [
       },
       {
         type: "video",
-        url: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4",
+        url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
         caption: "🎬 Colorful lanterns floating on water during traditional lantern festival",
         duration: 25
       }
@@ -96,8 +96,8 @@ export const pinData: PinData[] = [
     media: [
       {
         type: "video",
-        url: "https://videos.pexels.com/video-files/3571264/3571264-sd_640_360_25fps.mp4",
-        caption: "Magnificent lantern festival celebration with thousands of colorful lanterns",
+        url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+        caption: "🎆 Magnificent lantern festival celebration with thousands of colorful lanterns",
         duration: 20
       },
       {
@@ -119,8 +119,8 @@ export const pinData: PinData[] = [
     media: [
       {
         type: "video",
-        url: "https://videos.pexels.com/video-files/7655277/7655277-sd_640_360_25fps.mp4",
-        caption: "Stunning sky lanterns floating up into the night sky during festival",
+        url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+        caption: "🎈 Stunning sky lanterns floating up into the night sky during festival",
         duration: 18
       },
       {
@@ -163,8 +163,8 @@ export const pinData: PinData[] = [
     media: [
       {
         type: "video",
-        url: "https://videos.pexels.com/video-files/2064827/2064827-sd_640_360_25fps.mp4",
-        caption: "Traditional Chinese dragon dance performance during lantern festival",
+        url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+        caption: "🐉 Traditional Chinese dragon dance performance during lantern festival",
         duration: 22
       },
       {
@@ -192,8 +192,8 @@ export const pinData: PinData[] = [
     media: [
       {
         type: "video",
-        url: "https://videos.pexels.com/video-files/7655277/7655277-sd_640_360_25fps.mp4",
-        caption: "Spectacular aerial view of lantern festival with hundreds of floating lanterns",
+        url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+        caption: "🎆 Spectacular aerial view of lantern festival with hundreds of floating lanterns",
         duration: 30
       },
       {

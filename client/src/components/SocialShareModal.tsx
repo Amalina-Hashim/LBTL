@@ -205,6 +205,15 @@ export default function SocialShareModal({
                   <p className="text-sm text-gray-800 mb-2">
                     {review}
                   </p>
+                  {photoUrl && (
+                    <div className="mb-2">
+                      <img 
+                        src={photoUrl} 
+                        alt="Achievement photo" 
+                        className="w-full max-w-xs rounded-lg object-cover"
+                      />
+                    </div>
+                  )}
                   <div className="text-xs text-primary">
                     #LightsByTheLake #JurongLakeGardens #NParks #Singapore
                   </div>
@@ -224,6 +233,7 @@ export default function SocialShareModal({
                     content: review,
                     location: locationName,
                     rating: rating || null,
+                    imageUrl: photoUrl || null,
                     likes: 0
                   };
 

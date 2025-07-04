@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -40,14 +40,6 @@ export default function EventMapPage() {
     // Track page view
     trackAnalytics('page_view', { page: 'event_map' });
 
-    // Add pins to map and store markers
-    const markerMap = new Map<string, L.Marker>();
-    pins.forEach(pin => {
-      const marker = addPinToMap(leafletMap, pin, handlePinClick);
-      markerMap.set(pin.id, marker);
-    });
-    setPinMarkers(markerMap);
-
     // Cleanup
     return () => {
       if (leafletMap) {
@@ -55,6 +47,63 @@ export default function EventMapPage() {
       }
     };
   }, []);
+
+  // Create a memoized pin click handler that captures current routing mode
+  const currentPinClickHandler = useCallback((pin: PinData) => {
+    console.log('Pin clicked:', pin.name, 'Routing mode (current):', routingMode);
+    
+    if (routingMode) {
+      const pinLatLng = L.latLng(pin.lat, pin.lng);
+      console.log('Creating LatLng:', pinLatLng);
+      
+      if (!startPoint) {
+        setStartPoint(pinLatLng);
+        console.log('Setting start point:', pinLatLng);
+        toast({
+          title: "Start Point Set",
+          description: `Starting route from ${pin.name}`,
+        });
+      } else if (!endPoint) {
+        setEndPoint(pinLatLng);
+        console.log('Setting end point and creating route');
+        createRoute(startPoint, pinLatLng);
+        toast({
+          title: "Route Created",
+          description: `Route planned to ${pin.name}`,
+        });
+      } else {
+        // Reset and start new route
+        console.log('Resetting route and starting new one');
+        clearRoute();
+        setStartPoint(pinLatLng);
+        setEndPoint(null);
+        toast({
+          title: "New Route Started",
+          description: `Starting new route from ${pin.name}`,
+        });
+      }
+    } else {
+      setSelectedPin(pin);
+      setIsModalOpen(true);
+      trackAnalytics('pin_click', { pinId: pin.id, pinType: pin.type });
+    }
+  }, [routingMode, startPoint, endPoint, map]);
+
+  // Separate effect to handle pins and routing mode changes
+  useEffect(() => {
+    if (!map) return;
+
+    // Clear existing markers
+    pinMarkers.forEach(marker => map.removeLayer(marker));
+
+    // Add pins to map with current handlePinClick
+    const markerMap = new Map<string, L.Marker>();
+    pins.forEach(pin => {
+      const marker = addPinToMap(map, pin, currentPinClickHandler);
+      markerMap.set(pin.id, marker);
+    });
+    setPinMarkers(markerMap);
+  }, [map, currentPinClickHandler, pins]);
 
   const createRoute = (start: L.LatLng, end: L.LatLng) => {
     console.log('createRoute called with:', start, end);
@@ -156,45 +205,7 @@ export default function EventMapPage() {
     });
   };
 
-  const handlePinClick = (pin: PinData) => {
-    console.log('Pin clicked:', pin.name, 'Routing mode:', routingMode);
-    
-    if (routingMode) {
-      const pinLatLng = L.latLng(pin.lat, pin.lng);
-      console.log('Creating LatLng:', pinLatLng);
-      
-      if (!startPoint) {
-        setStartPoint(pinLatLng);
-        console.log('Setting start point:', pinLatLng);
-        toast({
-          title: "Start Point Set",
-          description: `Starting route from ${pin.name}`,
-        });
-      } else if (!endPoint) {
-        setEndPoint(pinLatLng);
-        console.log('Setting end point and creating route');
-        createRoute(startPoint, pinLatLng);
-        toast({
-          title: "Route Created",
-          description: `Route planned to ${pin.name}`,
-        });
-      } else {
-        // Reset and start new route
-        console.log('Resetting route and starting new one');
-        clearRoute();
-        setStartPoint(pinLatLng);
-        setEndPoint(null);
-        toast({
-          title: "New Route Started",
-          description: `Starting new route from ${pin.name}`,
-        });
-      }
-    } else {
-      setSelectedPin(pin);
-      setIsModalOpen(true);
-      trackAnalytics('pin_click', { pinId: pin.id, pinType: pin.type });
-    }
-  };
+
 
   const handlePinComplete = (pinId: string, photoFile: File | null) => {
     setPins(prevPins => 

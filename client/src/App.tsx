@@ -21,19 +21,24 @@ const queryClient = new QueryClient({
 
 function App() {
   useEffect(() => {
-    // Initialize Firebase authentication
+    // Initialize Firebase authentication - gracefully handle missing config
     const initAuth = async () => {
       try {
-        const user = await signInAnonymouslyUser();
-        if (user) {
-          await createOrUpdateUser(user.uid, {
-            completedPins: [],
-            totalPhotos: 0,
-            totalRatings: 0,
-          });
+        // Only attempt Firebase auth if config is available
+        if (import.meta.env.VITE_FIREBASE_API_KEY) {
+          const user = await signInAnonymouslyUser();
+          if (user) {
+            await createOrUpdateUser(user.uid, {
+              completedPins: [],
+              totalPhotos: 0,
+              totalRatings: 0,
+            });
+          }
+        } else {
+          console.log('Firebase config not available - running in demo mode');
         }
       } catch (error) {
-        console.error('Error initializing auth:', error);
+        console.log('Running in demo mode without Firebase authentication');
       }
     };
 

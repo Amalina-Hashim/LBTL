@@ -98,6 +98,7 @@ The application uses a structured schema with the following main entities:
 Changelog:
 - July 04, 2025. Initial setup
 - July 04, 2025. Updated homepage images to feature Singapore's Jurong Lake Gardens and Singapore Botanic Gardens (NParks) instead of generic/foreign locations for better local relevance
+- July 04, 2025. Fixed navigation structure and map integration, added proper error handling for missing Firebase configuration
 
 ## User Preferences
 

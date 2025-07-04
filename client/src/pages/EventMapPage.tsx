@@ -16,6 +16,7 @@ export default function EventMapPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [completedPins, setCompletedPins] = useState<Set<string>>(new Set());
   const [showPrizeBanner, setShowPrizeBanner] = useState(false);
+  const [pinMarkers, setPinMarkers] = useState<Map<string, L.Marker>>(new Map());
   const [stats, setStats] = useState({
     visits: 23,
     photos: 15,
@@ -31,10 +32,13 @@ export default function EventMapPage() {
     // Track page view
     trackAnalytics('page_view', { page: 'event_map' });
 
-    // Add pins to map
+    // Add pins to map and store markers
+    const markerMap = new Map<string, L.Marker>();
     pins.forEach(pin => {
-      addPinToMap(leafletMap, pin, handlePinClick);
+      const marker = addPinToMap(leafletMap, pin, handlePinClick);
+      markerMap.set(pin.id, marker);
     });
+    setPinMarkers(markerMap);
 
     // Cleanup
     return () => {
@@ -57,7 +61,11 @@ export default function EventMapPage() {
       )
     );
     
-    setCompletedPins(prev => new Set([...prev, pinId]));
+    setCompletedPins(prev => {
+      const newSet = new Set(prev);
+      newSet.add(pinId);
+      return newSet;
+    });
     
     // Update stats
     setStats(prev => ({
@@ -66,17 +74,23 @@ export default function EventMapPage() {
       photos: photoFile ? prev.photos + 1 : prev.photos
     }));
 
-    // Update map marker
-    if (map) {
+    // Update pins state to mark as completed
+    setPins(prev => prev.map(p => 
+      p.id === pinId ? { ...p, completed: true } : p
+    ));
+
+    // Update map marker to yellow
+    const marker = pinMarkers.get(pinId);
+    if (marker) {
       const pin = pins.find(p => p.id === pinId);
-      if (pin && pin.marker) {
-        updatePinMarker(pin.marker, { ...pin, completed: true });
+      if (pin) {
+        updatePinMarker(marker, { ...pin, completed: true });
       }
     }
 
     // Check if all trail pins are completed
     const trailPins = pins.filter(p => p.type === 'trail');
-    const completedTrailPins = trailPins.filter(p => p.completed || p.id === pinId);
+    const completedTrailPins = trailPins.filter(p => completedPins.has(p.id) || p.id === pinId);
     
     if (completedTrailPins.length >= trailPins.length) {
       setShowPrizeBanner(true);

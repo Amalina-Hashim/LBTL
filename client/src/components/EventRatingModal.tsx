@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, Heart, Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 
 interface EventRatingModalProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ export default function EventRatingModal({ isOpen, onClose, onSubmitRating }: Ev
   const [review, setReview] = useState("");
   const [hoveredRating, setHoveredRating] = useState<number>(0);
   const { toast } = useToast();
+  const [location, setLocation] = useLocation();
 
   const handleSubmit = () => {
     if (rating === 0) {
@@ -34,6 +36,11 @@ export default function EventRatingModal({ isOpen, onClose, onSubmitRating }: Ev
     setRating(0);
     setReview("");
     onClose();
+    
+    // Navigate to Community Wall after successful rating submission
+    setTimeout(() => {
+      setLocation('/community');
+    }, 1000);
   };
 
   const handleStarClick = (starRating: number) => {

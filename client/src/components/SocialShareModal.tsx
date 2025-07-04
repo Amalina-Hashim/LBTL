@@ -300,8 +300,9 @@ export default function SocialShareModal({
                 } catch (error) {
                   console.error('Error posting to community:', error);
                   toast({
-                    title: "Posted to Community Wall!",
-                    description: "Your post has been shared with the community.",
+                    title: "Error posting to Community Wall",
+                    description: "There was an issue sharing your post. Please try again.",
+                    variant: "destructive",
                   });
                 }
               }}

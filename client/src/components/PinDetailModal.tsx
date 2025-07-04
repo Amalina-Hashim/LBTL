@@ -1,13 +1,23 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { X, Camera, Upload, Trash2, Check, QrCode, Star, Send, Share2 } from "lucide-react";
-import { PinData } from "@/data/pinData";
-import { useToast } from "@/hooks/use-toast";
-import SocialShareModal from "./SocialShareModal";
+import { QrCode, Camera, Upload, Check, Star, Send, Share2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 import CameraCapture from "./CameraCapture";
+import SocialShareModal from "./SocialShareModal";
+
+interface PinData {
+  id: string;
+  name: string;
+  description: string;
+  lat: number;
+  lng: number;
+  type: 'trail' | 'vendor' | 'facility';
+  completed: boolean;
+  vendorName?: string;
+}
 
 interface PinDetailModalProps {
   pin: PinData | null;
@@ -25,19 +35,24 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
   const [review, setReview] = useState("");
   const [showSocialShare, setShowSocialShare] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { toast } = useToast();
+
+  if (!pin) return null;
+
+  const canComplete = pin.type === 'trail' ? qrScanned && photoFile : true;
 
   const handleQRScan = () => {
     setQrScanned(true);
     toast({
       title: "QR Code Scanned!",
-      description: "Location verified successfully",
+      description: "Great! Now take a photo to complete the challenge.",
     });
   };
 
-  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (file) {
       setPhotoFile(file);
       const reader = new FileReader();
@@ -48,32 +63,22 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
     }
   };
 
-  const handleRemovePhoto = () => {
-    setPhotoFile(null);
-    setPhotoPreview(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
   const handleCameraCapture = () => {
     setShowCamera(true);
   };
 
   const handleCameraPhoto = (file: File) => {
     setPhotoFile(file);
-    const previewUrl = URL.createObjectURL(file);
-    setPhotoPreview(previewUrl);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setPhotoPreview(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
     setShowCamera(false);
   };
 
   const handleGallerySelect = () => {
     if (fileInputRef.current) {
-      // Reset the input first
-      fileInputRef.current.value = '';
-      // Remove capture attribute for gallery selection
-      fileInputRef.current.removeAttribute('capture');
-      fileInputRef.current.setAttribute('accept', 'image/*');
       fileInputRef.current.click();
     }
   };
@@ -81,24 +86,32 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
   const handleComplete = () => {
     if (pin && qrScanned && photoFile) {
       onComplete(pin.id, photoFile);
-      handleClose();
+      setIsCompleted(true);
+      setIsEditing(false);
+      
+      toast({
+        title: "Check-in Complete!",
+        description: "Your trail challenge has been completed successfully.",
+      });
     }
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
   };
 
   const handleRateSubmit = () => {
     if (pin && rating > 0) {
       onRate(pin.id, rating, review);
-      
-      // Show social sharing modal after successful rating
-      if (review.trim()) {
-        setShowSocialShare(true);
-      } else {
-        handleClose();
-      }
+      setShowSocialShare(true);
     }
   };
 
-  const handleSocialShareClose = () => {
+  const handleSocialShareComplete = () => {
     setShowSocialShare(false);
     handleClose();
   };
@@ -111,15 +124,21 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
     setReview("");
     setShowSocialShare(false);
     setShowCamera(false);
+    setIsCompleted(false);
+    setIsEditing(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
     onClose();
   };
 
-  const canComplete = qrScanned && photoFile;
-
-  if (!pin) return null;
+  // Set initial state based on pin completion status
+  React.useEffect(() => {
+    if (pin && isOpen) {
+      setIsCompleted(pin.completed || false);
+      setIsEditing(false);
+    }
+  }, [pin, isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -132,118 +151,166 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
         <div className="space-y-6">
           {pin.type === 'trail' && (
             <>
-              {/* QR Code Section */}
-              <Card>
-                <CardContent className="p-3 sm:p-4">
-                  <div className="text-center">
-                    <QrCode className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 text-gray-400" />
-                    <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">Scan QR Code to check in</p>
-                    <Button
-                      onClick={handleQRScan}
-                      disabled={qrScanned}
-                      className={`w-full text-sm sm:text-base ${qrScanned ? 'bg-green-500 hover:bg-green-600' : 'bg-primary hover:bg-primary/90'}`}
-                    >
-                      {qrScanned ? (
-                        <>
-                          <Check className="w-4 h-4 mr-2" />
-                          QR Code Scanned!
-                        </>
-                      ) : (
-                        <>
-                          <Camera className="w-4 h-4 mr-2" />
-                          Simulate QR Scan
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Photo Upload Section */}
-              <Card>
-                <CardContent className="p-3 sm:p-4">
-                  <label className="block text-sm font-medium mb-2">Share Your Experience</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-6 text-center hover:border-primary transition-colors">
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      className="hidden"
-                      accept="image/*"
-                      onChange={handlePhotoUpload}
-                    />
-                    
-                    {!photoPreview ? (
-                      <div>
-                        <Camera className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 text-gray-400" />
-                        <p className="text-sm sm:text-base text-gray-600 mb-4">Capture or upload a photo</p>
-                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
-                          <Button
-                            onClick={handleCameraCapture}
-                            variant="default"
-                            size="sm"
-                            className="flex-1 sm:flex-none"
-                          >
-                            <Camera className="w-4 h-4 mr-2" />
-                            Take Photo
-                          </Button>
-                          <Button
-                            onClick={handleGallerySelect}
-                            variant="outline"
-                            size="sm"
-                            className="flex-1 sm:flex-none"
-                          >
-                            <Upload className="w-4 h-4 mr-2" />
-                            Choose from Gallery
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div>
-                        <img
-                          src={photoPreview}
-                          alt="Preview"
-                          className="w-full h-32 sm:h-48 object-cover rounded-lg mb-4"
-                        />
-                        <Button
-                          onClick={handleRemovePhoto}
-                          variant="outline"
+              {isCompleted && !isEditing ? (
+                <Card className="border-green-200 bg-green-50">
+                  <CardContent className="p-3 sm:p-4">
+                    <div className="text-center">
+                      <Check className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 text-green-500" />
+                      <h3 className="font-semibold text-green-800 mb-2">Challenge Completed!</h3>
+                      <p className="text-sm text-green-700 mb-4">You've successfully completed this trail challenge.</p>
+                      <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                        <Button onClick={handleEdit} variant="outline" size="sm">
+                          Edit Check-in
+                        </Button>
+                        <Button 
+                          onClick={() => setShowSocialShare(true)} 
+                          variant="default" 
                           size="sm"
                         >
-                          <Trash2 className="w-4 h-4 mr-1" />
-                          Remove
+                          <Share2 className="w-4 h-4 mr-2" />
+                          Share Achievement
                         </Button>
                       </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <>
+                  <Card>
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="text-center">
+                        <QrCode className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 text-gray-400" />
+                        <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">Scan QR Code to check in</p>
+                        <Button
+                          onClick={handleQRScan}
+                          disabled={qrScanned && !isEditing}
+                          className={`w-full text-sm sm:text-base ${qrScanned ? 'bg-green-500 hover:bg-green-600' : 'bg-primary hover:bg-primary/90'}`}
+                        >
+                          {qrScanned ? (
+                            <>
+                              <Check className="w-4 h-4 mr-2" />
+                              QR Code Scanned!
+                            </>
+                          ) : (
+                            <>
+                              <Camera className="w-4 h-4 mr-2" />
+                              Simulate QR Scan
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-3 sm:p-4">
+                      <label className="block text-sm font-medium mb-2">Share Your Experience</label>
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-6 text-center hover:border-primary transition-colors">
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          className="hidden"
+                          accept="image/*"
+                          onChange={handlePhotoUpload}
+                        />
+                        
+                        {!photoPreview ? (
+                          <div>
+                            <Camera className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 text-gray-400" />
+                            <p className="text-sm sm:text-base text-gray-600 mb-4">Capture or upload a photo</p>
+                            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
+                              <Button
+                                onClick={handleCameraCapture}
+                                variant="default"
+                                size="sm"
+                                className="flex-1 sm:flex-none"
+                              >
+                                <Camera className="w-4 h-4 mr-2" />
+                                Take Photo
+                              </Button>
+                              <Button
+                                onClick={handleGallerySelect}
+                                variant="outline"
+                                size="sm"
+                                className="flex-1 sm:flex-none"
+                              >
+                                <Upload className="w-4 h-4 mr-2" />
+                                Choose from Gallery
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div>
+                            <img
+                              src={photoPreview}
+                              alt="Captured photo"
+                              className="max-w-full h-32 sm:h-40 object-cover rounded-lg mx-auto mb-3"
+                            />
+                            <p className="text-sm text-green-600 mb-2">Photo captured!</p>
+                            <Button
+                              onClick={() => {
+                                setPhotoFile(null);
+                                setPhotoPreview(null);
+                              }}
+                              variant="outline"
+                              size="sm"
+                            >
+                              Retake Photo
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                    {isEditing ? (
+                      <>
+                        <Button
+                          onClick={handleComplete}
+                          disabled={!canComplete}
+                          className="flex-1 sm:flex-none sm:px-6 text-sm sm:text-base"
+                        >
+                          <Check className="w-4 h-4 mr-2" />
+                          Update Check-in
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="flex-1 sm:flex-none sm:px-6 text-sm sm:text-base"
+                          onClick={handleCancelEdit}
+                        >
+                          Cancel
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          onClick={handleComplete}
+                          disabled={!canComplete}
+                          className="flex-1 sm:flex-none sm:px-6 text-sm sm:text-base"
+                        >
+                          <Check className="w-4 h-4 mr-2" />
+                          Complete Challenge
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="flex-1 sm:flex-none sm:px-6 text-sm sm:text-base"
+                          onClick={() => setShowSocialShare(true)}
+                          disabled={!canComplete}
+                        >
+                          <Share2 className="w-4 h-4 mr-2" />
+                          Share
+                        </Button>
+                      </>
                     )}
                   </div>
-                </CardContent>
-              </Card>
-
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-                <Button
-                  onClick={handleComplete}
-                  disabled={!canComplete}
-                  className="flex-1 text-sm sm:text-base"
-                >
-                  <Check className="w-4 h-4 mr-2" />
-                  Complete Check-in
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="flex-1 sm:flex-none sm:px-6 text-sm sm:text-base"
-                  onClick={() => setShowSocialShare(true)}
-                  disabled={!canComplete}
-                >
-                  <Share2 className="w-4 h-4 mr-2" />
-                  Share
-                </Button>
-              </div>
+                </>
+              )}
             </>
           )}
 
           {pin.type === 'vendor' && (
             <>
-              {/* Rating Section */}
               <Card>
                 <CardContent className="p-3 sm:p-4">
                   <label className="block text-sm font-medium mb-2">Rate This Vendor</label>
@@ -299,23 +366,21 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
         </div>
       </DialogContent>
       
-      {/* Camera Capture Modal */}
       <CameraCapture
         isOpen={showCamera}
         onClose={() => setShowCamera(false)}
         onCapture={handleCameraPhoto}
       />
 
-      {/* Social Sharing Modal */}
       <SocialShareModal
         isOpen={showSocialShare}
-        onClose={handleSocialShareClose}
-        rating={pin.type === 'vendor' ? rating : undefined}
-        review={pin.type === 'vendor' ? review : `Just completed the ${pin.name} challenge! 🎉`}
+        onClose={handleSocialShareComplete}
+        rating={rating}
+        review={review}
         locationName={pin.name}
-        userName="Nature Explorer"
+        userName="Trail Explorer"
         photoUrl={photoPreview || undefined}
-        postType={pin.type === 'vendor' ? 'rating' : 'completion'}
+        postType={pin.type === 'trail' ? 'completion' : 'rating'}
       />
     </Dialog>
   );

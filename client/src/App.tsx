@@ -6,6 +6,7 @@ import HomePage from "@/pages/HomePage";
 import EventMapPage from "@/pages/EventMapPage";
 import CommunityWallPage from "@/pages/CommunityWallPage";
 import AdminDashboardPage from "@/pages/AdminDashboardPage";
+import CompletedChallengesPage from "@/pages/CompletedChallengesPage";
 import NotFoundPage from "@/pages/not-found";
 import { useEffect } from "react";
 import { signInAnonymouslyUser, createOrUpdateUser } from "@/lib/firebase";
@@ -55,6 +56,7 @@ function App() {
             <Route path="/event" component={EventMapPage} />
             <Route path="/community" component={CommunityWallPage} />
             <Route path="/admin" component={AdminDashboardPage} />
+            <Route path="/completed" component={CompletedChallengesPage} />
             <Route component={NotFoundPage} />
           </Switch>
         </main>

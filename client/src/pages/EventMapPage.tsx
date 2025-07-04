@@ -288,6 +288,12 @@ export default function EventMapPage() {
       localStorage.setItem('completedPins', JSON.stringify(Array.from(newSet)));
       console.log('Saved completed pins to localStorage:', Array.from(newSet));
       
+      // Save completion timestamp
+      const completionTimes = JSON.parse(localStorage.getItem('completionTimes') || '{}');
+      completionTimes[pinId] = new Date().toISOString();
+      localStorage.setItem('completionTimes', JSON.stringify(completionTimes));
+      console.log('Saved completion timestamp for pin:', pinId, completionTimes[pinId]);
+      
       return newSet;
     });
     
@@ -556,10 +562,12 @@ export default function EventMapPage() {
               </div>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
-              <div className="bg-primary text-white px-2 sm:px-4 py-1 sm:py-2 rounded-lg">
-                <span className="font-semibold text-xs sm:text-sm">{completedCount}/{totalTrailPins}</span>
-                <span className="hidden sm:inline"> Completed</span>
-              </div>
+              <Link href="/completed">
+                <div className="bg-primary text-white px-2 sm:px-4 py-1 sm:py-2 rounded-lg hover:bg-primary/90 transition-colors cursor-pointer">
+                  <span className="font-semibold text-xs sm:text-sm">{completedCount}/{totalTrailPins}</span>
+                  <span className="hidden sm:inline"> Completed</span>
+                </div>
+              </Link>
               <Button 
                 variant={routingMode ? "default" : "outline"} 
                 size="sm" 

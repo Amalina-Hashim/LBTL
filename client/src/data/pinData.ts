@@ -134,26 +134,26 @@ export const pinData: PinData[] = [
     id: "14",
     name: "North Carpark",
     description: "Main parking area near Forest Ramble and Clusia Cove (173 car lots)",
-    lat: 1.3420,
-    lng: 103.7235,
+    lat: 1.3402,
+    lng: 103.7238,
     type: "facility",
     completed: false
   },
   {
     id: "15",
     name: "South Carpark",
-    description: "Parking area near ActiveSG and Grasslands (171 car lots)",
-    lat: 1.3365,
-    lng: 103.7230,
+    description: "Parking area near ActiveSG and Grasslands (171 car lots) at 50 Yuan Ching Road",
+    lat: 1.3387,
+    lng: 103.7267,
     type: "facility",
     completed: false
   },
   {
     id: "16",
     name: "Clusia Cove Toilet",
-    description: "Restroom facilities with changing areas at water play area",
-    lat: 1.3425,
-    lng: 103.7240,
+    description: "Restroom facilities with changing areas at water play area (104 Yuan Ching Road)",
+    lat: 1.3404,
+    lng: 103.7243,
     type: "facility",
     completed: false
   },
@@ -161,7 +161,7 @@ export const pinData: PinData[] = [
     id: "17",
     name: "Forest Ramble Toilet",
     description: "Restroom between Otter Play and Monkey Play areas with nursing room",
-    lat: 1.3415,
+    lat: 1.3408,
     lng: 103.7245,
     type: "facility",
     completed: false
@@ -170,8 +170,8 @@ export const pinData: PinData[] = [
     id: "18",
     name: "Japanese Garden Toilet",
     description: "Public restroom facilities in Japanese Garden area",
-    lat: 1.3398,
-    lng: 103.7278,
+    lat: 1.3395,
+    lng: 103.7275,
     type: "facility",
     completed: false
   },
@@ -179,7 +179,7 @@ export const pinData: PinData[] = [
     id: "19",
     name: "Entrance Pavilion",
     description: "Main visitor information center with maps and guides",
-    lat: 1.3410,
+    lat: 1.3405,
     lng: 103.7225,
     type: "facility",
     completed: false
@@ -188,8 +188,8 @@ export const pinData: PinData[] = [
     id: "20",
     name: "Water Lily Pavilion",
     description: "Lakeside visitor services location with staff assistance",
-    lat: 1.3380,
-    lng: 103.7265,
+    lat: 1.3385,
+    lng: 103.7270,
     type: "facility",
     completed: false
   }

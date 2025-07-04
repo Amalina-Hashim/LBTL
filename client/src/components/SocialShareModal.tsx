@@ -114,28 +114,8 @@ export default function SocialShareModal({
     // Create post content for community wall
     const postContent = generatePost('facebook'); // Use Facebook format for community posts
     
-    // Create community post
-    try {
-      const { createPost } = await import('@/lib/firebase');
-      await createPost({
-        username: userName || 'Trail Explorer',
-        location: locationName,
-        imageUrl: photoUrl || '',
-        caption: postContent,
-        likes: 0,
-        comments: 0,
-        userId: 'anonymous', // Since we're using anonymous auth
-        createdAt: new Date(),
-      });
-      
-      toast({
-        title: "Posted to Community!",
-        description: "Your achievement has been shared with the community.",
-      });
-    } catch (error) {
-      console.error('Error creating community post:', error);
-      // Continue with social media simulation even if community post fails
-    }
+    // Note: Community posting is now handled by the "Post to Community Wall" button
+    // This section only handles social media sharing simulation
     
     // Simulate sharing delay for social platforms
     for (const platform of selectedPlatforms) {

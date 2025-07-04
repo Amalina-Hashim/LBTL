@@ -357,33 +357,73 @@ export default function EventMapPage() {
         <div id="map" className="w-full h-64 sm:h-80 md:h-96 lg:h-[500px]"></div>
         
         {/* Map Legend - responsive positioning */}
-        <Card className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 max-w-[140px] sm:max-w-none">
+        <Card className={`absolute top-2 right-2 sm:top-4 sm:right-4 z-10 max-w-[140px] sm:max-w-none ${routingMode ? 'border-blue-500 bg-blue-50' : ''}`}>
           <CardContent className="p-2 sm:p-4">
-            <h3 className="font-semibold mb-1 sm:mb-2 text-xs sm:text-sm">Legend</h3>
-            <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
-              <div className="flex items-center">
-                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-primary rounded-full mr-1 sm:mr-2"></div>
-                <span className="truncate">Science Park Trail Challenge</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-yellow-500 rounded-full mr-1 sm:mr-2"></div>
-                <span className="truncate">Completed</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-orange-500 rounded-full mr-1 sm:mr-2"></div>
-                <span className="truncate">Food Vendors</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-purple-500 rounded-full mr-1 sm:mr-2"></div>
-                <span className="truncate">Facilities</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-blue-600 rounded-full mr-1 sm:mr-2"></div>
-                <span className="truncate">Lights by the Lake Events</span>
-              </div>
+            <div className="flex items-center justify-between mb-1 sm:mb-2">
+              <h3 className="font-semibold text-xs sm:text-sm">Legend</h3>
+              {routingMode && (
+                <div className="flex items-center text-blue-600">
+                  <Navigation className="w-3 h-3 sm:w-4 sm:h-4" />
+                </div>
+              )}
             </div>
+            {routingMode ? (
+              <div className="space-y-1 text-xs sm:text-sm">
+                <div className="text-blue-800 font-medium">🗺️ Route Planning</div>
+                <div className="text-blue-700 text-xs">Click two pins to create walking route</div>
+                <div className="text-blue-700 text-xs">Click "Exit Route" to return to trail challenges</div>
+              </div>
+            ) : (
+              <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
+                <div className="flex items-center">
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 bg-primary rounded-full mr-1 sm:mr-2"></div>
+                  <span className="truncate">Science Park Trail Challenge</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 bg-yellow-500 rounded-full mr-1 sm:mr-2"></div>
+                  <span className="truncate">Completed</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 bg-orange-500 rounded-full mr-1 sm:mr-2"></div>
+                  <span className="truncate">Food Vendors</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 bg-purple-500 rounded-full mr-1 sm:mr-2"></div>
+                  <span className="truncate">Facilities</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 sm:w-4 sm:h-4 bg-blue-600 rounded-full mr-1 sm:mr-2"></div>
+                  <span className="truncate">Lights by the Lake Events</span>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
+
+        {/* Routing Status Indicator */}
+        {routingMode && (
+          <div className="absolute bottom-4 left-4 z-10">
+            <Card className="border-blue-500 bg-blue-50">
+              <CardContent className="p-3">
+                <div className="flex items-center space-x-2 text-blue-800">
+                  <Navigation className="w-5 h-5" />
+                  <div>
+                    <div className="font-medium text-sm">Route Planning Active</div>
+                    {!startPoint && (
+                      <div className="text-xs text-blue-700">Click first pin to set start point</div>
+                    )}
+                    {startPoint && !endPoint && (
+                      <div className="text-xs text-blue-700">Click second pin to create route</div>
+                    )}
+                    {startPoint && endPoint && (
+                      <div className="text-xs text-blue-700">Click another pin to start new route</div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
 
       {/* Stats Section */}

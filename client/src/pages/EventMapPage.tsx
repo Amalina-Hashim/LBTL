@@ -341,22 +341,28 @@ export default function EventMapPage() {
         console.log('Photo stored in localStorage with ID:', photoId);
         imageUrl = `[${photoId}]`; // Marker format for user photos
         
-        // TEMPORARY: Test without photo to isolate the issue
-        console.log('TEMPORARILY SKIPPING PHOTO to test request without image data');
-        imageUrl = null;
+        // Photo data ready for posting
+        console.log('Photo data ready for community posting');
       }
       
-      const postData = {
+      const postData: any = {
         userId: 'user-explorer',
         type: 'achievement',
         content: message,
         location: 'Science Park Trail - Jurong Lake Gardens',
-        ...(imageUrl && { imageUrl }), // Only include imageUrl if it's not null/undefined
         likes: 0
       };
+      
+      if (imageUrl) {
+        postData.imageUrl = imageUrl;
+      }
 
       console.log('Posting celebration data:', {
-        ...postData,
+        userId: postData.userId,
+        type: postData.type,
+        content: postData.content,
+        location: postData.location,
+        likes: postData.likes,
         imageUrl: postData.imageUrl ? `[Photo data - ${postData.imageUrl.length} chars]` : 'No photo'
       });
 
@@ -396,8 +402,13 @@ export default function EventMapPage() {
           description: "Your trail completion has been posted to the community wall.",
         });
         
-        // Navigate to Community Wall after successful post
-        window.location.href = '/community';
+        // Close the modal first to ensure state is updated
+        setIsTrailCompletionOpen(false);
+        
+        // Navigate to Community Wall after successful post (with slight delay to ensure state updates)
+        setTimeout(() => {
+          window.location.href = '/community';
+        }, 100);
       } else {
         const errorText = await response.text();
         console.error('Failed to post celebration - Response:', response.status, errorText);

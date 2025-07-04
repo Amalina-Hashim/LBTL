@@ -13,13 +13,8 @@ interface CompletedChallenge {
   completedAt: string;
   lat: number;
   lng: number;
-  media?: Array<{
-    type: 'image' | 'video' | 'audio';
-    url: string;
-    caption?: string;
-    duration?: number;
-  }>;
   funFact?: string;
+  photoId?: string; // Photo taken during completion
 }
 
 export default function CompletedChallengesPage() {
@@ -34,17 +29,22 @@ export default function CompletedChallengesPage() {
     const savedCompletionTimes = localStorage.getItem('completionTimes');
     const completionTimes = savedCompletionTimes ? JSON.parse(savedCompletionTimes) : {};
     
+    // Get completion photos from localStorage
+    const savedCompletionPhotos = localStorage.getItem('completionPhotos');
+    const completionPhotos = savedCompletionPhotos ? JSON.parse(savedCompletionPhotos) : {};
+    
     // Filter and map completed challenges
     const completed = pinData
       .filter(pin => pin.type === 'trail' && completedPinIds.includes(pin.id))
       .map(pin => ({
         ...pin,
-        completedAt: completionTimes[pin.id] || new Date().toISOString()
+        completedAt: completionTimes[pin.id] || new Date().toISOString(),
+        photoId: completionPhotos[pin.id] || null
       }))
       .sort((a, b) => new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime());
     
     setCompletedChallenges(completed);
-    console.log('Loaded completed challenges:', completed);
+    console.log('Loaded completed challenges with photos:', completed);
   }, []);
 
   const formatDate = (dateString: string) => {
@@ -148,22 +148,27 @@ export default function CompletedChallengesPage() {
                     </div>
                   )}
                   
-                  <div className="flex items-center gap-1 text-sm text-gray-500">
-                    <MapPin className="w-4 h-4" />
-                    <span>Location: {challenge.lat.toFixed(4)}, {challenge.lng.toFixed(4)}</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1 text-sm text-gray-500">
+                      <MapPin className="w-4 h-4" />
+                      <span>Location: {challenge.lat.toFixed(4)}, {challenge.lng.toFixed(4)}</span>
+                    </div>
                   </div>
                   
-                  {challenge.media && challenge.media.length > 0 && (
+                  {challenge.photoId && (
                     <div className="mt-3">
                       <p className="text-sm font-medium text-gray-700 mb-2">
-                        Challenge Media:
+                        Completion Photo:
                       </p>
-                      <div className="flex flex-wrap gap-2">
-                        {challenge.media.map((item, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {item.type} {item.caption && `- ${item.caption}`}
-                          </Badge>
-                        ))}
+                      <div className="w-full max-w-sm">
+                        <img 
+                          src={localStorage.getItem(challenge.photoId) || ''} 
+                          alt={`Completion photo for ${challenge.name}`}
+                          className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
                       </div>
                     </div>
                   )}

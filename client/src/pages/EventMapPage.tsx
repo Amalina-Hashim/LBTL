@@ -294,6 +294,25 @@ export default function EventMapPage() {
       localStorage.setItem('completionTimes', JSON.stringify(completionTimes));
       console.log('Saved completion timestamp for pin:', pinId, completionTimes[pinId]);
       
+      // Save photo if provided
+      if (photoFile) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (e.target?.result) {
+            const photoId = `USER_PHOTO_${Date.now()}_${pinId}`;
+            const photoData = e.target.result as string;
+            localStorage.setItem(photoId, photoData);
+            
+            // Save photo reference for completion
+            const completionPhotos = JSON.parse(localStorage.getItem('completionPhotos') || '{}');
+            completionPhotos[pinId] = photoId;
+            localStorage.setItem('completionPhotos', JSON.stringify(completionPhotos));
+            console.log('Saved completion photo for pin:', pinId, 'with ID:', photoId);
+          }
+        };
+        reader.readAsDataURL(photoFile);
+      }
+      
       return newSet;
     });
     

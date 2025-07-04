@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Heart, MessageCircle, Share2, User, RefreshCw, Camera } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Share2, User, RefreshCw, Camera, Star } from "lucide-react";
 import { SiFacebook, SiInstagram } from "react-icons/si";
 import { getPosts, trackAnalytics } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
@@ -19,6 +19,8 @@ interface CommunityPost {
   comments: number;
   createdAt: Date;
   isUserPhoto?: boolean;
+  type?: string;
+  rating?: number;
 }
 
 export default function CommunityWallPage() {
@@ -26,6 +28,24 @@ export default function CommunityWallPage() {
   const [loading, setLoading] = useState(true);
   const [selectedLocation, setSelectedLocation] = useState("all");
   const { toast } = useToast();
+
+  const renderStarRating = (rating: number) => {
+    return (
+      <div className="flex items-center gap-1 my-2">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            className={`w-4 h-4 ${
+              star <= rating 
+                ? 'fill-yellow-400 text-yellow-400' 
+                : 'text-gray-300'
+            }`}
+          />
+        ))}
+        <span className="text-sm text-gray-600 ml-1">({rating}/5)</span>
+      </div>
+    );
+  };
 
   useEffect(() => {
     loadPosts();
@@ -72,6 +92,8 @@ export default function CommunityWallPage() {
           likes: post.likes || 0,
           comments: Math.floor(Math.random() * 5) + 2,
           createdAt: new Date(post.createdAt),
+          type: post.type,
+          rating: post.rating,
         }));
         
         // Debug logging
@@ -273,6 +295,9 @@ export default function CommunityWallPage() {
                     </div>
                     
                     <p className="text-gray-800 mb-4">{post.caption}</p>
+                    
+                    {/* Show star rating for rating posts */}
+                    {post.type === 'rating' && post.rating && renderStarRating(post.rating)}
                     
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">

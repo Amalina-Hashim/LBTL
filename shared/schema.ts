@@ -48,9 +48,12 @@ export const ratings = pgTable("ratings", {
 
 export const analytics = pgTable("analytics", {
   id: text("id").primaryKey(),
-  eventType: text("event_type").notNull(),
-  data: text("data"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  pageViews: integer("page_views").default(0).notNull(),
+  activeUsers: integer("active_users").default(0).notNull(),
+  qrScans: integer("qr_scans").default(0).notNull(),
+  photoUploads: integer("photo_uploads").default(0).notNull(),
+  trailStarts: integer("trail_starts").default(0).notNull(),
+  eventRatings: text("event_ratings").array().default([]).notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
@@ -125,6 +128,8 @@ export const analyticsSchema = z.object({
   activeUsers: z.number().default(0),
   qrScans: z.number().default(0),
   photoUploads: z.number().default(0),
+  trailStarts: z.number().default(0), // Track when users start trail challenges
+  eventRatings: z.array(z.number().min(1).max(5)).default([]), // Store all event ratings
   updatedAt: z.date().default(() => new Date()),
 });
 

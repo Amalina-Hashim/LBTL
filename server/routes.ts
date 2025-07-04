@@ -301,6 +301,93 @@ export function registerRoutes(app: Express) {
     }
   });
 
+  // Track trail starts
+  app.post("/api/analytics/trail-start", async (req: Request, res: Response) => {
+    try {
+      // Get or create the main analytics record
+      let analytics = await storage.getAnalytics('main');
+      if (!analytics) {
+        analytics = await storage.createAnalytics({
+          pageViews: 0,
+          activeUsers: 0,
+          qrScans: 0,
+          photoUploads: 0,
+          trailStarts: 1,
+          eventRatings: [],
+        });
+      } else {
+        analytics = await storage.updateAnalytics('main', {
+          trailStarts: analytics.trailStarts + 1
+        });
+      }
+      
+      return res.json({ message: "Trail start tracked", analytics });
+    } catch (error) {
+      return res.status(500).json({ error: "Failed to track trail start" });
+    }
+  });
+
+  // Track event ratings
+  app.post("/api/analytics/event-rating", async (req: Request, res: Response) => {
+    try {
+      const { rating } = req.body;
+      if (!rating || rating < 1 || rating > 5) {
+        return res.status(400).json({ error: "Invalid rating" });
+      }
+
+      // Get or create the main analytics record
+      let analytics = await storage.getAnalytics('main');
+      if (!analytics) {
+        analytics = await storage.createAnalytics({
+          pageViews: 0,
+          activeUsers: 0,
+          qrScans: 0,
+          photoUploads: 0,
+          trailStarts: 0,
+          eventRatings: [rating],
+        });
+      } else {
+        const newRatings = [...analytics.eventRatings, rating];
+        analytics = await storage.updateAnalytics('main', {
+          eventRatings: newRatings
+        });
+      }
+      
+      return res.json({ message: "Event rating tracked", analytics });
+    } catch (error) {
+      return res.status(500).json({ error: "Failed to track event rating" });
+    }
+  });
+
+  // Get analytics stats
+  app.get("/api/analytics/stats", async (req: Request, res: Response) => {
+    try {
+      const analytics = await storage.getAnalytics('main');
+      if (!analytics) {
+        return res.json({ 
+          participants: 0, 
+          averageRating: 0,
+          totalRatings: 0
+        });
+      }
+      
+      const participants = analytics.trailStarts;
+      const ratings = analytics.eventRatings;
+      const totalRatings = ratings.length;
+      const averageRating = totalRatings > 0 
+        ? ratings.reduce((sum, rating) => sum + rating, 0) / totalRatings 
+        : 0;
+      
+      return res.json({ 
+        participants, 
+        averageRating: Math.round(averageRating * 10) / 10,
+        totalRatings
+      });
+    } catch (error) {
+      return res.status(500).json({ error: "Failed to fetch analytics stats" });
+    }
+  });
+
   app.get("/api/analytics/:id", async (req: Request, res: Response) => {
     try {
       const id = req.params.id;

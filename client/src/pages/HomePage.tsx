@@ -2,8 +2,45 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, MapPin, Users, Star, Play, QrCode, Camera, Utensils } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+
+interface AnalyticsStats {
+  participants: number;
+  averageRating: number;
+  totalRatings: number;
+}
 
 export default function HomePage() {
+  const [stats, setStats] = useState<AnalyticsStats>({
+    participants: 0,
+    averageRating: 0,
+    totalRatings: 0
+  });
+
+  const { data: analyticsData, isLoading } = useQuery({
+    queryKey: ['/api/analytics/stats'],
+    refetchInterval: 5000, // Refresh every 5 seconds
+  });
+
+  useEffect(() => {
+    if (analyticsData) {
+      setStats(analyticsData);
+    } else {
+      // Fallback to localStorage data
+      const participantCount = parseInt(localStorage.getItem('participantCount') || '0');
+      const eventRatings = JSON.parse(localStorage.getItem('eventRatings') || '[]');
+      const averageRating = eventRatings.length > 0 
+        ? eventRatings.reduce((sum: number, rating: number) => sum + rating, 0) / eventRatings.length 
+        : 0;
+      
+      setStats({
+        participants: participantCount,
+        averageRating: Math.round(averageRating * 10) / 10,
+        totalRatings: eventRatings.length
+      });
+    }
+  }, [analyticsData]);
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -69,11 +106,11 @@ export default function HomePage() {
                       </div>
                       <div className="flex items-center text-gray-700">
                         <Users className="text-primary mr-3 w-5 h-5" />
-                        <span>1,247 participants</span>
+                        <span>{isLoading ? "Loading..." : `${stats.participants} participants`}</span>
                       </div>
                       <div className="flex items-center text-gray-700">
                         <Star className="text-primary mr-3 w-5 h-5" />
-                        <span>4.8/5 rating</span>
+                        <span>{isLoading ? "Loading..." : `${stats.averageRating || 0}/5 rating`}</span>
                       </div>
                     </div>
 

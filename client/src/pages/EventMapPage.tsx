@@ -38,6 +38,28 @@ export default function EventMapPage() {
   const [endMarker, setEndMarker] = useState<L.Marker | null>(null);
   const { toast } = useToast();
 
+  // Track trail starts for participant analytics
+  const trackTrailStart = async () => {
+    try {
+      // Track in backend
+      await fetch('/api/analytics/trail-start', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      // Also track in localStorage as backup
+      const currentParticipants = parseInt(localStorage.getItem('participantCount') || '0');
+      localStorage.setItem('participantCount', (currentParticipants + 1).toString());
+    } catch (error) {
+      console.error('Failed to track trail start:', error);
+      // Fallback to localStorage only
+      const currentParticipants = parseInt(localStorage.getItem('participantCount') || '0');
+      localStorage.setItem('participantCount', (currentParticipants + 1).toString());
+    }
+  };
+
   // Initialize completed pins from localStorage and pin data
   useEffect(() => {
     const savedCompletedPins = localStorage.getItem('completedPins');
@@ -143,6 +165,11 @@ export default function EventMapPage() {
       setSelectedPin(pin);
       setIsModalOpen(true);
       trackAnalytics('pin_click', { pinId: pin.id, pinType: pin.type });
+      
+      // Track trail starts for participant count
+      if (pin.type === 'trail') {
+        trackTrailStart();
+      }
     }
   }, [routingMode, routeCreated, startPoint, endPoint, map]);
 
@@ -500,6 +527,20 @@ export default function EventMapPage() {
 
   const handleEventRating = async (rating: number, review: string) => {
     try {
+      // Track event rating for analytics
+      await fetch('/api/analytics/event-rating', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ rating }),
+      });
+      
+      // Also track in localStorage as backup
+      const currentRatings = JSON.parse(localStorage.getItem('eventRatings') || '[]');
+      currentRatings.push(rating);
+      localStorage.setItem('eventRatings', JSON.stringify(currentRatings));
+
       // Create a post for the event rating
       const postData = {
         userId: 'user-explorer',

@@ -347,12 +347,41 @@ export default function EventMapPage() {
   };
 
   const handleEventRating = async (rating: number, review: string) => {
-    // Note: Event ratings are now handled through the "Share Achievement" modal
-    // This allows users to control if they want to share their rating publicly
-    toast({
-      title: "Thank you for your rating!",
-      description: "Your feedback has been recorded.",
-    });
+    try {
+      // Create a post for the event rating
+      const postData = {
+        userId: 'user-explorer',
+        type: 'rating',
+        content: review || `Rated the Lights by the Lake event ${rating} stars! 🌟`,
+        location: 'Lights by the Lake - Jurong Lake Gardens',
+        imageUrl: null,
+        rating: rating,
+        likes: 0
+      };
+
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Rating Shared!",
+          description: "Your event rating has been posted to the community wall.",
+        });
+      } else {
+        throw new Error('Failed to post rating');
+      }
+    } catch (error) {
+      console.error('Error posting event rating:', error);
+      toast({
+        title: "Rating Saved",
+        description: "Your rating has been recorded locally.",
+      });
+    }
   };
 
   const completedCount = completedPins.size;

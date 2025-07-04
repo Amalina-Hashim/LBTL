@@ -37,13 +37,15 @@ export default function CommunityWallPage() {
       const response = await fetch('/api/posts');
       if (response.ok) {
         const apiPosts = await response.json();
-        const formattedPosts = apiPosts.map((post: any) => ({
+        const formattedPosts = apiPosts.posts.map((post: any) => ({
           id: post.id,
           username: post.userId === 'user-demo' ? 'TrailExplorer' : 
                    post.userId === 'user-alice' ? 'AliceWanders' :
                    post.userId === 'user-bob' ? 'BobAdventures' :
                    post.userId === 'user-carol' ? 'CarolTrails' :
-                   post.userId === 'user-david' ? 'DavidEats' : 'Explorer',
+                   post.userId === 'user-david' ? 'DavidEats' :
+                   post.userId === 'user-explorer' ? 'Trail Explorer' :
+                   post.userId === 'user-test' ? 'Anonymous User' : 'Explorer',
           location: post.location || 'Jurong Lake Gardens',
           timestamp: new Date(post.createdAt).toLocaleDateString(),
           imageUrl: post.imageUrl || 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
@@ -60,8 +62,8 @@ export default function CommunityWallPage() {
       }
     } catch (error) {
       console.error('Error loading posts:', error);
-      // For demo purposes, show sample posts when Firebase is not configured
-      setSamplePosts();
+      // Set empty posts array instead of sample posts
+      setPosts([]);
     } finally {
       setLoading(false);
     }

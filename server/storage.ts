@@ -229,6 +229,7 @@ class MemStorage implements IStorage {
 import { db } from "./db";
 import { posts, users, pins, ratings, analytics } from "@shared/schema";
 import { eq } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 
 class DatabaseStorage implements IStorage {
   // Post operations
@@ -256,7 +257,7 @@ class DatabaseStorage implements IStorage {
   }
 
   async getAllPosts(): Promise<Post[]> {
-    const allPosts = await db.select().from(posts);
+    const allPosts = await db.select().from(posts).orderBy(desc(posts.createdAt));
     return allPosts.map(post => ({
       ...post,
       createdAt: post.createdAt.toISOString(),

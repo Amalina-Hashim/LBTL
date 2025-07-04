@@ -73,6 +73,11 @@ export default function CommunityWallPage() {
           comments: Math.floor(Math.random() * 5) + 2,
           createdAt: new Date(post.createdAt),
         }));
+        
+        // Debug logging
+        console.log('Latest post content:', response.posts[0]?.content);
+        console.log('Formatted latest post caption:', formattedPosts[0]?.caption);
+        
         setPosts(formattedPosts.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()));
       } else {
         // Fallback to Firebase if API fails

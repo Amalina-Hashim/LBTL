@@ -28,11 +28,23 @@ export const createCustomIcon = (type: string, completed: boolean = false) => {
 export const initializeMap = (containerId: string, center: [number, number], zoom: number = 16) => {
   const map = L.map(containerId).setView(center, zoom);
 
-  // Add OpenStreetMap tiles as backup for demo
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 19
-  }).addTo(map);
+  // Check if OneMap API key is available
+  const oneMapKey = import.meta.env.VITE_ONEMAP_API_KEY;
+  
+  if (oneMapKey) {
+    // Use OneMap tiles for Singapore (when API key is available)
+    L.tileLayer('https://maps-{s}.onemap.sg/v3/Default/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.onemap.sg/">OneMap</a> contributors',
+      subdomains: ['a', 'b', 'c'],
+      maxZoom: 19
+    }).addTo(map);
+  } else {
+    // Fallback to OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19
+    }).addTo(map);
+  }
 
   return map;
 };

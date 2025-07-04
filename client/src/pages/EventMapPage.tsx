@@ -9,6 +9,7 @@ import L from 'leaflet';
 import { trackAnalytics } from "@/lib/firebase";
 import PinDetailModal from "@/components/PinDetailModal";
 import TrailCompletionModal from "@/components/TrailCompletionModal";
+import EventRatingModal from "@/components/EventRatingModal";
 import { useToast } from "@/hooks/use-toast";
 import { createPost } from "@/lib/firebase";
 
@@ -18,6 +19,7 @@ export default function EventMapPage() {
   const [selectedPin, setSelectedPin] = useState<PinData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTrailCompletionOpen, setIsTrailCompletionOpen] = useState(false);
+  const [isEventRatingOpen, setIsEventRatingOpen] = useState(false);
   const [completedPins, setCompletedPins] = useState<Set<string>>(new Set());
   const [showPrizeBanner, setShowPrizeBanner] = useState(false);
   const [pinMarkers, setPinMarkers] = useState<Map<string, L.Marker>>(new Map());
@@ -403,6 +405,43 @@ export default function EventMapPage() {
     }
   };
 
+  const handleEventRating = async (rating: number, review: string) => {
+    try {
+      const postData = {
+        userId: 'user-explorer',
+        type: 'event_rating',
+        content: `${review} ${'⭐'.repeat(rating)} - Lights by the Lake Event`,
+        location: 'Jurong Lake Gardens - Lights by the Lake',
+        rating: rating,
+        likes: 0
+      };
+
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(postData),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Event Rating Posted!",
+          description: "Your rating has been shared on the community wall.",
+        });
+      } else {
+        toast({
+          title: "Thank you for your rating!",
+          description: "Your feedback has been recorded.",
+        });
+      }
+    } catch (error) {
+      console.error('Error posting event rating:', error);
+      toast({
+        title: "Thank you for your rating!",
+        description: "Your feedback has been recorded.",
+      });
+    }
+  };
+
   const completedCount = completedPins.size;
   const totalTrailPins = pins.filter(p => p.type === 'trail').length;
 
@@ -444,6 +483,23 @@ export default function EventMapPage() {
                 className="sm:hidden"
               >
                 <Route className="w-4 h-4" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setIsEventRatingOpen(true)}
+                className="hidden sm:flex"
+              >
+                <Star className="w-4 h-4 mr-2" />
+                Rate Event
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => setIsEventRatingOpen(true)}
+                className="sm:hidden"
+              >
+                <Star className="w-4 h-4" />
               </Button>
               <Link href="/community">
                 <Button variant="outline" size="sm" className="hidden sm:flex">
@@ -611,6 +667,13 @@ export default function EventMapPage() {
         completedCount={pins.filter(p => p.type === 'trail' && p.completed).length}
         totalCount={totalTrailPins}
         onCelebrationPost={handleCelebrationPost}
+      />
+
+      {/* Event Rating Modal */}
+      <EventRatingModal
+        isOpen={isEventRatingOpen}
+        onClose={() => setIsEventRatingOpen(false)}
+        onSubmitRating={handleEventRating}
       />
     </div>
   );

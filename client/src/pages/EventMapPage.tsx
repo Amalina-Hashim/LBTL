@@ -8,13 +8,16 @@ import { initializeMap, addPinToMap, updatePinMarker, JURONG_LAKE_BOUNDS } from 
 import L from 'leaflet';
 import { trackAnalytics } from "@/lib/firebase";
 import PinDetailModal from "@/components/PinDetailModal";
+import TrailCompletionModal from "@/components/TrailCompletionModal";
 import { useToast } from "@/hooks/use-toast";
+import { createPost } from "@/lib/firebase";
 
 export default function EventMapPage() {
   const [map, setMap] = useState<L.Map | null>(null);
   const [pins, setPins] = useState<PinData[]>(pinData);
   const [selectedPin, setSelectedPin] = useState<PinData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTrailCompletionOpen, setIsTrailCompletionOpen] = useState(false);
   const [completedPins, setCompletedPins] = useState<Set<string>>(new Set());
   const [showPrizeBanner, setShowPrizeBanner] = useState(false);
   const [pinMarkers, setPinMarkers] = useState<Map<string, L.Marker>>(new Map());
@@ -248,6 +251,8 @@ export default function EventMapPage() {
     
     if (completedTrailPins.length >= trailPins.length) {
       setShowPrizeBanner(true);
+      // Show trail completion celebration modal
+      setTimeout(() => setIsTrailCompletionOpen(true), 1500);
     }
 
     toast({

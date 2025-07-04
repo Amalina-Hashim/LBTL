@@ -3,10 +3,18 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { QrCode, Camera, Upload, Check, Star, Send, Share2 } from "lucide-react";
+import { QrCode, Camera, Upload, Check, Star, Send, Share2, Lightbulb } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import CameraCapture from "./CameraCapture";
 import SocialShareModal from "./SocialShareModal";
+import MediaDisplay from "./MediaDisplay";
+
+interface MediaContent {
+  type: 'image' | 'video' | 'audio';
+  url: string;
+  caption?: string;
+  duration?: number;
+}
 
 interface PinData {
   id: string;
@@ -17,6 +25,8 @@ interface PinData {
   type: 'trail' | 'vendor' | 'facility' | 'event';
   completed: boolean;
   vendorName?: string;
+  media?: MediaContent[];
+  funFact?: string;
 }
 
 interface PinDetailModalProps {
@@ -151,6 +161,26 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
         <div className="space-y-6">
           {pin.type === 'trail' && (
             <>
+              {/* Multimedia Content for Trail Challenges */}
+              {pin.media && pin.media.length > 0 && (
+                <MediaDisplay media={pin.media} className="mb-4" />
+              )}
+              
+              {/* Educational Fun Fact */}
+              {pin.funFact && (
+                <Card className="border-amber-200 bg-amber-50">
+                  <CardContent className="p-3">
+                    <div className="flex items-start space-x-2">
+                      <Lightbulb className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="font-medium text-amber-800 text-sm mb-1">Did You Know?</h4>
+                        <p className="text-amber-700 text-sm">{pin.funFact}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {isCompleted && !isEditing ? (
                 <Card className="border-green-200 bg-green-50">
                   <CardContent className="p-3 sm:p-4">

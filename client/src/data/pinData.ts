@@ -1,3 +1,10 @@
+export interface MediaContent {
+  type: 'image' | 'video' | 'audio';
+  url: string;
+  caption?: string;
+  duration?: number; // for video/audio in seconds
+}
+
 export interface PinData {
   id: string;
   name: string;
@@ -7,6 +14,8 @@ export interface PinData {
   type: 'trail' | 'vendor' | 'facility' | 'event';
   completed: boolean;
   vendorName?: string;
+  media?: MediaContent[]; // Rich media content for trail challenges
+  funFact?: string; // Educational content for trail challenges
 }
 
 export const pinData: PinData[] = [
@@ -17,7 +26,27 @@ export const pinData: PinData[] = [
     lat: 1.3387,
     lng: 103.7258,
     type: "trail",
-    completed: false
+    completed: false,
+    media: [
+      {
+        type: "video",
+        url: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
+        caption: "Explore the traditional Chinese architecture and garden design",
+        duration: 30
+      },
+      {
+        type: "image", 
+        url: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80",
+        caption: "Traditional Chinese garden pagoda at sunset"
+      },
+      {
+        type: "audio",
+        url: "https://www2.cs.uic.edu/~i101/SoundFiles/BabyElephantWalk60.wav",
+        caption: "Listen to traditional Chinese garden ambiance",
+        duration: 15
+      }
+    ],
+    funFact: "Chinese gardens are designed to represent natural landscapes in miniature, with each element symbolizing harmony between humans and nature."
   },
   {
     id: "2",
@@ -26,7 +55,21 @@ export const pinData: PinData[] = [
     lat: 1.3395,
     lng: 103.7265,
     type: "trail",
-    completed: false
+    completed: false,
+    media: [
+      {
+        type: "image",
+        url: "https://images.unsplash.com/photo-1480796927426-f609979314bd?w=800&q=80",
+        caption: "Traditional Japanese wooden bridge architecture"
+      },
+      {
+        type: "video",
+        url: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_2mb.mp4",
+        caption: "Watch koi fish swimming beneath the bridge",
+        duration: 20
+      }
+    ],
+    funFact: "Japanese garden bridges are built without nails, using traditional joinery techniques that have been passed down for centuries."
   },
   {
     id: "3",

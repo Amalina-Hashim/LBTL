@@ -257,12 +257,7 @@ export default function CommunityWallPage() {
                             alt={`Post from ${post.location}`}
                             className="w-full h-64 object-cover rounded-lg" 
                           />
-                          {/* User photo badge */}
-                          {post.isUserPhoto && (
-                            <div className="absolute top-2 right-2 bg-green-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                              📸 User Photo
-                            </div>
-                          )}
+                          {/* User photo badge - removed per user request */}
                         </div>
                       ) : (
                         <div className="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center">

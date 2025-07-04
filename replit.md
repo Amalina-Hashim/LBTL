@@ -108,6 +108,8 @@ Changelog:
 - July 04, 2025. Enhanced routing system to allow dual-mode functionality: users can plan walking routes AND explore pins normally after route creation. Added visual indicators, status guidance, and "New Route" button for seamless mode switching
 - July 04, 2025. Added comprehensive lantern festival multimedia content including authentic Creative Commons videos, audio, and images from Pexels and other legitimate sources. Enhanced all Science Park Trail challenges with lantern festival themes, traditional Chinese New Year content, dragon dances, floating lanterns, and cultural educational materials
 - July 04, 2025. Implemented complete community posting system with anonymous authentication - users can now share trail completions and vendor ratings to Community Wall without creating accounts. Trail completion celebration modal includes "Share to Community Wall" feature for achievement posts
+- July 04, 2025. Added "Rate Event" functionality with dedicated button in header - users can now rate the overall Lights by the Lake event experience and have ratings automatically posted to Community Wall
+- July 04, 2025. Optimized all modal sizes (EventRatingModal, TrailCompletionModal, PinDetailModal) to max-w-sm and max-h-[85vh] for better desktop viewing experience
 
 ## User Preferences
 

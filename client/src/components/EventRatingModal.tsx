@@ -48,7 +48,7 @@ export default function EventRatingModal({ isOpen, onClose, onSubmitRating }: Ev
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md mx-4 sm:mx-auto">
+      <DialogContent className="max-w-sm max-h-[85vh] overflow-y-auto mx-4 sm:mx-auto">
         <DialogHeader>
           <DialogTitle className="text-center">
             <div className="flex justify-center mb-2">

@@ -152,7 +152,7 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto mx-4 sm:mx-auto">
+      <DialogContent className="max-w-sm max-h-[85vh] overflow-y-auto mx-4 sm:mx-auto">
         <DialogHeader>
           <DialogTitle className="text-lg sm:text-xl font-bold pr-8">{pin.name}</DialogTitle>
           <p className="text-sm sm:text-base text-gray-600">{pin.description}</p>

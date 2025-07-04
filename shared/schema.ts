@@ -89,13 +89,13 @@ export type User = z.infer<typeof userSchema>;
 export const postSchema = z.object({
   id: z.string(),
   userId: z.string(),
-  pinId: z.string(),
-  username: z.string().default('Anonymous'),
-  caption: z.string(),
-  imageUrl: z.string(),
-  location: z.string(),
+  type: z.string(),
+  content: z.string(),
+  location: z.string().optional(),
+  imageUrl: z.string().optional(),
+  pinId: z.string().optional(),
+  rating: z.number().optional(),
   likes: z.number().default(0),
-  comments: z.number().default(0),
   createdAt: z.date().default(() => new Date()),
 });
 

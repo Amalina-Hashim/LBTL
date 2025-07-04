@@ -350,7 +350,19 @@ export default function EventMapPage() {
         likes: 0
       };
 
-      console.log('Posting celebration data:', postData);
+      console.log('Posting celebration data:', {
+        ...postData,
+        imageUrl: postData.imageUrl ? `[Photo data - ${postData.imageUrl.length} chars]` : 'No photo'
+      });
+
+      let requestBody;
+      try {
+        requestBody = JSON.stringify(postData);
+        console.log('JSON stringified successfully, body size:', requestBody.length);
+      } catch (jsonError) {
+        console.error('JSON stringify error:', jsonError);
+        throw new Error('Failed to prepare request data');
+      }
 
       let response;
       try {
@@ -359,12 +371,13 @@ export default function EventMapPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(postData),
+          body: requestBody,
         });
         console.log('Fetch completed, response received');
       } catch (fetchError) {
         console.error('Fetch error:', fetchError);
-        throw new Error(`Network error: ${fetchError.message}`);
+        const errorMessage = fetchError instanceof Error ? fetchError.message : 'Unknown network error';
+        throw new Error(`Network error: ${errorMessage}`);
       }
 
       console.log('Response status:', response.status);
@@ -400,11 +413,15 @@ export default function EventMapPage() {
       setIsTrailCompletionOpen(false);
     } catch (error) {
       console.error('Error posting to community:', error);
-      console.error('Error details:', {
-        message: error.message,
-        stack: error.stack,
-        name: error.name
-      });
+      if (error instanceof Error) {
+        console.error('Error details:', {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        });
+      } else {
+        console.error('Non-Error object caught:', typeof error, error);
+      }
       toast({
         title: "Share Failed",
         description: "Unable to post to community wall. Please try again.",

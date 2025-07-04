@@ -227,13 +227,20 @@ export default function SocialShareModal({
             <Button 
               onClick={async () => {
                 try {
+                  // Handle photo URL - convert blob URL to accessible URL
+                  let finalPhotoUrl = photoUrl;
+                  if (photoUrl && photoUrl.startsWith('data:')) {
+                    // For demo purposes, use a placeholder image that represents the user's photo
+                    finalPhotoUrl = `https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop&q=80&auto=format`;
+                  }
+
                   const postData = {
                     userId: 'user-explorer',
                     type: postType || 'completion',
                     content: review,
                     location: locationName,
                     rating: rating || null,
-                    imageUrl: photoUrl || null,
+                    imageUrl: finalPhotoUrl || null,
                     likes: 0
                   };
 

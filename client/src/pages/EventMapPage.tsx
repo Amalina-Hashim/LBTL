@@ -42,7 +42,19 @@ export default function EventMapPage() {
   useEffect(() => {
     const completedPinIds = pins.filter(pin => pin.completed).map(pin => pin.id);
     setCompletedPins(new Set(completedPinIds));
-  }, []);
+  }, [pins]);
+
+  // Update map markers when pin completion status changes
+  useEffect(() => {
+    if (map && pinMarkers.size > 0) {
+      pins.forEach(pin => {
+        const marker = pinMarkers.get(pin.id);
+        if (marker) {
+          updatePinMarker(marker, pin);
+        }
+      });
+    }
+  }, [pins, map, pinMarkers]);
 
   useEffect(() => {
     // Initialize map when component mounts

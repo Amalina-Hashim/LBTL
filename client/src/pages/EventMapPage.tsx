@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Users, Trophy, Eye, Camera, Star } from "lucide-react";
+import { ArrowLeft, Users, Trophy, Eye, Camera, Star, Route, Navigation, MapPin } from "lucide-react";
 import { pinData, PinData } from "@/data/pinData";
 import { initializeMap, addPinToMap, updatePinMarker, JURONG_LAKE_BOUNDS } from "@/lib/mapUtils";
+import L from 'leaflet';
 import { trackAnalytics } from "@/lib/firebase";
 import PinDetailModal from "@/components/PinDetailModal";
 import { useToast } from "@/hooks/use-toast";
@@ -22,6 +23,13 @@ export default function EventMapPage() {
     photos: 15,
     ratings: 8
   });
+  const [routingMode, setRoutingMode] = useState(false);
+  const [routingControl, setRoutingControl] = useState<any>(null);
+  const [startPoint, setStartPoint] = useState<L.LatLng | null>(null);
+  const [endPoint, setEndPoint] = useState<L.LatLng | null>(null);
+  const [walkingPath, setWalkingPath] = useState<L.Polyline | null>(null);
+  const [startMarker, setStartMarker] = useState<L.Marker | null>(null);
+  const [endMarker, setEndMarker] = useState<L.Marker | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -48,10 +56,122 @@ export default function EventMapPage() {
     };
   }, []);
 
+  const createRoute = (start: L.LatLng, end: L.LatLng) => {
+    if (!map) return;
+
+    // Clear existing route
+    if (routingControl) {
+      map.removeLayer(routingControl);
+    }
+
+    // Clear existing markers
+    if (startMarker) map.removeLayer(startMarker);
+    if (endMarker) map.removeLayer(endMarker);
+
+    // Create start marker (green)
+    const startIcon = L.divIcon({
+      html: `<div style="background-color: #00703c;" class="w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+               <i class="fas fa-play text-white text-sm"></i>
+             </div>`,
+      className: 'custom-marker',
+      iconSize: [32, 32],
+      iconAnchor: [16, 16]
+    });
+
+    // Create end marker (red)
+    const endIcon = L.divIcon({
+      html: `<div style="background-color: #dc2626;" class="w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+               <i class="fas fa-flag text-white text-sm"></i>
+             </div>`,
+      className: 'custom-marker',
+      iconSize: [32, 32],
+      iconAnchor: [16, 16]
+    });
+
+    const newStartMarker = L.marker(start, { icon: startIcon }).addTo(map);
+    const newEndMarker = L.marker(end, { icon: endIcon }).addTo(map);
+    
+    setStartMarker(newStartMarker);
+    setEndMarker(newEndMarker);
+
+    // Create simple polyline route (walking path)
+    const routeLine = L.polyline([start, end], {
+      color: '#00703c',
+      weight: 4,
+      opacity: 0.8,
+      dashArray: '10, 5'
+    }).addTo(map);
+
+    setRoutingControl(routeLine);
+    
+    // Fit map to show route
+    const bounds: L.LatLngBoundsExpression = [[start.lat, start.lng], [end.lat, end.lng]];
+    map.fitBounds(bounds, { padding: [20, 20] });
+  };
+
+  const clearRoute = () => {
+    if (routingControl && map) {
+      map.removeLayer(routingControl);
+      setRoutingControl(null);
+    }
+    if (startMarker && map) {
+      map.removeLayer(startMarker);
+      setStartMarker(null);
+    }
+    if (endMarker && map) {
+      map.removeLayer(endMarker);
+      setEndMarker(null);
+    }
+    setStartPoint(null);
+    setEndPoint(null);
+  };
+
+  const toggleRoutingMode = () => {
+    setRoutingMode(!routingMode);
+    if (routingMode) {
+      clearRoute();
+    }
+    
+    toast({
+      title: routingMode ? "Routing Mode Off" : "Routing Mode On",
+      description: routingMode ? 
+        "Click pins to view details" : 
+        "Click two pins to create a walking route",
+    });
+  };
+
   const handlePinClick = (pin: PinData) => {
-    setSelectedPin(pin);
-    setIsModalOpen(true);
-    trackAnalytics('pin_click', { pinId: pin.id, pinType: pin.type });
+    if (routingMode) {
+      const pinLatLng = L.latLng(pin.lat, pin.lng);
+      
+      if (!startPoint) {
+        setStartPoint(pinLatLng);
+        toast({
+          title: "Start Point Set",
+          description: `Starting route from ${pin.name}`,
+        });
+      } else if (!endPoint) {
+        setEndPoint(pinLatLng);
+        createRoute(startPoint, pinLatLng);
+        toast({
+          title: "Route Created",
+          description: `Route planned to ${pin.name}`,
+        });
+      } else {
+        // Reset and start new route
+        clearRoute();
+        setStartPoint(pinLatLng);
+        setEndPoint(null);
+        toast({
+          title: "New Route Started",
+          description: `Starting new route from ${pin.name}`,
+        });
+      }
+    } else {
+      setSelectedPin(pin);
+      setIsModalOpen(true);
+      trackAnalytics('pin_click', { pinId: pin.id, pinType: pin.type });
+    }
   };
 
   const handlePinComplete = (pinId: string, photoFile: File | null) => {
@@ -136,7 +256,7 @@ export default function EventMapPage() {
               </Link>
               <div className="min-w-0 flex-1">
                 <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">Lights by the Lake</h1>
-                <p className="text-sm sm:text-base text-gray-600 truncate">Science Park Trail Challenge</p>
+                <p className="text-sm sm:text-base text-gray-600 truncate">Jurong Lake Gardens Trail Experience</p>
               </div>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
@@ -144,6 +264,23 @@ export default function EventMapPage() {
                 <span className="font-semibold text-xs sm:text-sm">{completedCount}/{totalTrailPins}</span>
                 <span className="hidden sm:inline"> Completed</span>
               </div>
+              <Button 
+                variant={routingMode ? "default" : "outline"} 
+                size="sm" 
+                onClick={toggleRoutingMode}
+                className="hidden sm:flex"
+              >
+                <Route className="w-4 h-4 mr-2" />
+                {routingMode ? "Exit Route" : "Plan Route"}
+              </Button>
+              <Button 
+                variant={routingMode ? "default" : "outline"} 
+                size="sm" 
+                onClick={toggleRoutingMode}
+                className="sm:hidden"
+              >
+                <Route className="w-4 h-4" />
+              </Button>
               <Link href="/community">
                 <Button variant="outline" size="sm" className="hidden sm:flex">
                   <Users className="w-4 h-4 mr-2" />
@@ -164,6 +301,20 @@ export default function EventMapPage() {
           <div className="flex items-center justify-center">
             <Trophy className="w-5 h-5 mr-2" />
             <span className="font-semibold">Congratulations! Prize Available - Visit Information Counter</span>
+          </div>
+        </div>
+      )}
+
+      {/* Routing Instructions */}
+      {routingMode && (
+        <div className="bg-blue-50 border border-blue-200 p-3 mx-4 sm:mx-6 lg:mx-8">
+          <div className="flex items-center text-blue-800">
+            <Navigation className="w-4 h-4 mr-2" />
+            <p className="text-sm">
+              {!startPoint ? "Click a pin to set your starting point" : 
+               !endPoint ? "Click another pin to create your walking route" :
+               "Route created! Click 'Exit Route' to return to normal mode"}
+            </p>
           </div>
         </div>
       )}

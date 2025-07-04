@@ -1,4 +1,5 @@
 import L from 'leaflet';
+import 'leaflet-routing-machine';
 
 export const createCustomIcon = (type: string, completed: boolean = false) => {
   let iconColor = '#00703c'; // Default NEAR green

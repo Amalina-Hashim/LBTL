@@ -23,25 +23,17 @@ export default function NavigationHeader() {
           </div>
           
           <nav className="hidden md:flex space-x-8">
-            <Link href="/">
-              <a className={`transition-colors ${isActive('/') ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
-                Home
-              </a>
+            <Link href="/" className={`transition-colors ${isActive('/') ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+              Home
             </Link>
-            <Link href="/event">
-              <a className={`transition-colors ${isActive('/event') ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
-                Events
-              </a>
+            <Link href="/event" className={`transition-colors ${isActive('/event') ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+              Events
             </Link>
-            <Link href="/community">
-              <a className={`transition-colors ${isActive('/community') ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
-                Community
-              </a>
+            <Link href="/community" className={`transition-colors ${isActive('/community') ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+              Community
             </Link>
-            <Link href="/admin">
-              <a className={`transition-colors ${isActive('/admin') ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
-                Admin
-              </a>
+            <Link href="/admin" className={`transition-colors ${isActive('/admin') ? 'text-primary' : 'text-gray-700 hover:text-primary'}`}>
+              Admin
             </Link>
           </nav>
           
@@ -65,25 +57,17 @@ export default function NavigationHeader() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t">
             <div className="flex flex-col space-y-2">
-              <Link href="/">
-                <a className={`block py-2 px-4 rounded ${isActive('/') ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
-                  Home
-                </a>
+              <Link href="/" className={`block py-2 px-4 rounded ${isActive('/') ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
+                Home
               </Link>
-              <Link href="/event">
-                <a className={`block py-2 px-4 rounded ${isActive('/event') ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
-                  Events
-                </a>
+              <Link href="/event" className={`block py-2 px-4 rounded ${isActive('/event') ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
+                Events
               </Link>
-              <Link href="/community">
-                <a className={`block py-2 px-4 rounded ${isActive('/community') ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
-                  Community
-                </a>
+              <Link href="/community" className={`block py-2 px-4 rounded ${isActive('/community') ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
+                Community
               </Link>
-              <Link href="/admin">
-                <a className={`block py-2 px-4 rounded ${isActive('/admin') ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
-                  Admin
-                </a>
+              <Link href="/admin" className={`block py-2 px-4 rounded ${isActive('/admin') ? 'bg-primary text-white' : 'text-gray-700 hover:bg-gray-100'}`}>
+                Admin
               </Link>
             </div>
           </div>

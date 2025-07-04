@@ -39,6 +39,14 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
   const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Set initial state based on pin completion status
+  React.useEffect(() => {
+    if (pin && isOpen) {
+      setIsCompleted(pin.completed || false);
+      setIsEditing(false);
+    }
+  }, [pin, isOpen]);
+
   if (!pin) return null;
 
   const canComplete = pin.type === 'trail' ? qrScanned && photoFile : true;
@@ -131,14 +139,6 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
     }
     onClose();
   };
-
-  // Set initial state based on pin completion status
-  React.useEffect(() => {
-    if (pin && isOpen) {
-      setIsCompleted(pin.completed || false);
-      setIsEditing(false);
-    }
-  }, [pin, isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>

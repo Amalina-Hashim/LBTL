@@ -280,31 +280,8 @@ export default function EventMapPage() {
       description: "Great job! Location marked as visited.",
     });
 
-    // Auto-create community post for trail completion
-    if (pins.find(p => p.id === pinId)?.type === 'trail') {
-      const pinName = pins.find(p => p.id === pinId)?.name;
-      const postData = {
-        userId: 'user-explorer',
-        type: 'completion',
-        content: `Just completed ${pinName}! 🎯 Amazing multimedia content and educational facts about lantern festivals!`,
-        location: pinName,
-        imageUrl: photoFile ? 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400' : null,
-        likes: 0
-      };
-
-      fetch('/api/posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(postData),
-      }).then(response => {
-        if (response.ok) {
-          toast({
-            title: "Posted to Community!",
-            description: "Your trail completion was shared on the community wall.",
-          });
-        }
-      }).catch(console.error);
-    }
+    // Note: Community posting is now handled by user choice in "Share Achievement" modal
+    // This allows users to control when and how they share their completions
 
     trackAnalytics('pin_complete', { pinId, hasPhoto: !!photoFile });
   };
@@ -316,50 +293,26 @@ export default function EventMapPage() {
       ratings: prev.ratings + 1
     }));
 
-    // Auto-create community post for vendor rating
-    const pin = pins.find(p => p.id === pinId);
-    if (pin?.type === 'vendor') {
-      const postData = {
-        userId: 'user-explorer',
-        type: 'rating',
-        content: `${review} ${'⭐'.repeat(rating)} - ${pin.vendorName || pin.name}`,
-        location: pin.name,
-        pinId: pinId,
-        rating: rating,
-        likes: 0
-      };
-
-      fetch('/api/posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(postData),
-      }).then(response => {
-        if (response.ok) {
-          toast({
-            title: "Rating Posted!",
-            description: "Your review was shared on the community wall.",
-          });
-        }
-      }).catch(console.error);
-    } else {
-      toast({
-        title: "Rating Submitted!",
-        description: "Thank you for your feedback!",
-      });
-    }
+    // Note: Community posting is now handled by user choice in "Share Achievement" modal
+    toast({
+      title: "Rating Submitted!",
+      description: "Thank you for your feedback!",
+    });
 
     trackAnalytics('vendor_rating', { pinId, rating, hasReview: !!review });
   };
 
   const handleCelebrationPost = async (message: string, photoFile: File | null) => {
     try {
-      // Create a community post for trail completion via API
+      // Convert user photo to marker format for proper identification
+      const userPhotoMarker = photoFile ? `[USER_PHOTO:${Date.now()}]` : null;
+      
       const postData = {
         userId: 'user-current',
         type: 'achievement',
         content: message,
         location: 'Science Park Trail - Jurong Lake Gardens',
-        imageUrl: photoFile ? 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400' : null,
+        imageUrl: userPhotoMarker,
         likes: 0
       };
 
@@ -377,21 +330,7 @@ export default function EventMapPage() {
           description: "Your trail completion has been posted to the community wall.",
         });
       } else {
-        // Fallback to Firebase
-        await createPost({
-          type: 'completion',
-          content: message,
-          location: 'Science Park Trail - Jurong Lake Gardens',
-          imageFile: photoFile,
-          timestamp: new Date().toISOString(),
-          completedCount: pins.filter(p => p.type === 'trail').length,
-          totalCount: pins.filter(p => p.type === 'trail').length
-        });
-        
-        toast({
-          title: "Celebration Shared!",
-          description: "Your trail completion has been posted to the community wall.",
-        });
+        throw new Error('Failed to post celebration');
       }
       
       setIsTrailCompletionOpen(false);
@@ -406,40 +345,12 @@ export default function EventMapPage() {
   };
 
   const handleEventRating = async (rating: number, review: string) => {
-    try {
-      const postData = {
-        userId: 'user-explorer',
-        type: 'event_rating',
-        content: `${review} ${'⭐'.repeat(rating)} - Lights by the Lake Event`,
-        location: 'Jurong Lake Gardens - Lights by the Lake',
-        rating: rating,
-        likes: 0
-      };
-
-      const response = await fetch('/api/posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(postData),
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Event Rating Posted!",
-          description: "Your rating has been shared on the community wall.",
-        });
-      } else {
-        toast({
-          title: "Thank you for your rating!",
-          description: "Your feedback has been recorded.",
-        });
-      }
-    } catch (error) {
-      console.error('Error posting event rating:', error);
-      toast({
-        title: "Thank you for your rating!",
-        description: "Your feedback has been recorded.",
-      });
-    }
+    // Note: Event ratings are now handled through the "Share Achievement" modal
+    // This allows users to control if they want to share their rating publicly
+    toast({
+      title: "Thank you for your rating!",
+      description: "Your feedback has been recorded.",
+    });
   };
 
   const completedCount = completedPins.size;

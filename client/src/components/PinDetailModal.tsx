@@ -7,6 +7,7 @@ import { X, Camera, Upload, Trash2, Check, QrCode, Star, Send, Share2 } from "lu
 import { PinData } from "@/data/pinData";
 import { useToast } from "@/hooks/use-toast";
 import SocialShareModal from "./SocialShareModal";
+import CameraCapture from "./CameraCapture";
 
 interface PinDetailModalProps {
   pin: PinData | null;
@@ -23,6 +24,7 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const [showSocialShare, setShowSocialShare] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -55,14 +57,14 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
   };
 
   const handleCameraCapture = () => {
-    if (fileInputRef.current) {
-      // Reset the input first
-      fileInputRef.current.value = '';
-      // Set capture attribute for camera
-      fileInputRef.current.setAttribute('capture', 'environment');
-      fileInputRef.current.setAttribute('accept', 'image/*');
-      fileInputRef.current.click();
-    }
+    setShowCamera(true);
+  };
+
+  const handleCameraPhoto = (file: File) => {
+    setPhotoFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    setPhotoPreview(previewUrl);
+    setShowCamera(false);
   };
 
   const handleGallerySelect = () => {
@@ -108,6 +110,7 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
     setRating(0);
     setReview("");
     setShowSocialShare(false);
+    setShowCamera(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -296,6 +299,13 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
         </div>
       </DialogContent>
       
+      {/* Camera Capture Modal */}
+      <CameraCapture
+        isOpen={showCamera}
+        onClose={() => setShowCamera(false)}
+        onCapture={handleCameraPhoto}
+      />
+
       {/* Social Sharing Modal */}
       <SocialShareModal
         isOpen={showSocialShare}

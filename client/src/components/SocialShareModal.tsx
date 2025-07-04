@@ -222,10 +222,20 @@ export default function SocialShareModal({
                     console.log('Photo URL does not start with data:', photoUrl);
                   }
 
+                  // Create appropriate content based on post type and review
+                  let postContent = review;
+                  if (!postContent || postContent.trim() === '') {
+                    if (postType === 'completion' || !postType) {
+                      postContent = `Just completed ${locationName}! 🎯 Amazing trail challenge experience!`;
+                    } else if (postType === 'rating') {
+                      postContent = `Rated ${locationName} ${'⭐'.repeat(rating)} - Great experience!`;
+                    }
+                  }
+
                   const postData = {
                     userId: 'user-explorer',
                     type: postType || 'completion',
-                    content: review,
+                    content: postContent,
                     location: locationName,
                     ...(rating > 0 && { rating: rating }), // Only include rating if > 0
                     ...(finalPhotoUrl && { imageUrl: finalPhotoUrl }), // Only include imageUrl if exists

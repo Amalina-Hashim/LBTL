@@ -336,9 +336,14 @@ export default function EventMapPage() {
           reader.readAsDataURL(photoFile);
         });
         
+        console.log('Photo data size:', photoData.length, 'characters');
         localStorage.setItem(photoId, photoData);
         console.log('Photo stored in localStorage with ID:', photoId);
         imageUrl = `[${photoId}]`; // Marker format for user photos
+        
+        // TEMPORARY: Test without photo to isolate the issue
+        console.log('TEMPORARILY SKIPPING PHOTO to test request without image data');
+        imageUrl = null;
       }
       
       const postData = {

@@ -112,6 +112,7 @@ Changelog:
 - July 04, 2025. Optimized all modal sizes (EventRatingModal, TrailCompletionModal, PinDetailModal) to max-w-sm and max-h-[85vh] for better desktop viewing experience
 - July 04, 2025. Fixed completion counter tracking system and ensured completed trail pins turn yellow on map with proper state synchronization between pins array and completedPins set
 - July 04, 2025. Implemented proper community wall posting with validation for different post types: rating posts (no image, with star display) and achievement posts (with image, no stars). Added server-side validation for POST /api/posts endpoint
+- July 04, 2025. Fixed community wall posting validation error where null imageUrl values were rejected by Zod schema. Updated frontend to only include imageUrl field when photos are present, ensuring proper schema validation for both photo and text-only posts
 
 ## User Preferences
 

@@ -346,19 +346,26 @@ export default function EventMapPage() {
         type: 'achievement',
         content: message,
         location: 'Science Park Trail - Jurong Lake Gardens',
-        imageUrl: imageUrl,
+        ...(imageUrl && { imageUrl }), // Only include imageUrl if it's not null/undefined
         likes: 0
       };
 
       console.log('Posting celebration data:', postData);
 
-      const response = await fetch('/api/posts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-      });
+      let response;
+      try {
+        response = await fetch('/api/posts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(postData),
+        });
+        console.log('Fetch completed, response received');
+      } catch (fetchError) {
+        console.error('Fetch error:', fetchError);
+        throw new Error(`Network error: ${fetchError.message}`);
+      }
 
       console.log('Response status:', response.status);
       console.log('Response headers:', Object.fromEntries(response.headers.entries()));
@@ -393,6 +400,11 @@ export default function EventMapPage() {
       setIsTrailCompletionOpen(false);
     } catch (error) {
       console.error('Error posting to community:', error);
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
       toast({
         title: "Share Failed",
         description: "Unable to post to community wall. Please try again.",

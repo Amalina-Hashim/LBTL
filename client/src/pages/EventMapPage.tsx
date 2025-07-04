@@ -324,13 +324,20 @@ export default function EventMapPage() {
       let imageUrl = null;
       if (photoFile) {
         const photoId = `USER_PHOTO_${Date.now()}`;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const photoData = e.target?.result as string;
-          localStorage.setItem(photoId, photoData);
-          console.log('Photo stored in localStorage with ID:', photoId);
-        };
-        reader.readAsDataURL(photoFile);
+        
+        // Wait for FileReader to complete
+        const photoData = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const result = e.target?.result as string;
+            resolve(result);
+          };
+          reader.onerror = () => reject(new Error('Failed to read photo file'));
+          reader.readAsDataURL(photoFile);
+        });
+        
+        localStorage.setItem(photoId, photoData);
+        console.log('Photo stored in localStorage with ID:', photoId);
         imageUrl = `[${photoId}]`; // Marker format for user photos
       }
       
@@ -353,6 +360,9 @@ export default function EventMapPage() {
         body: JSON.stringify(postData),
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
       if (response.ok) {
         const responseData = await response.json();
         console.log('Celebration post success:', responseData);
@@ -360,10 +370,24 @@ export default function EventMapPage() {
           title: "Celebration Shared!",
           description: "Your trail completion has been posted to the community wall.",
         });
+        
+        // Navigate to Community Wall after successful post
+        window.location.href = '/community';
       } else {
         const errorText = await response.text();
         console.error('Failed to post celebration - Response:', response.status, errorText);
-        throw new Error(`Failed to post celebration: ${response.status}`);
+        
+        // Try to parse error as JSON for more details
+        let errorDetails = errorText;
+        try {
+          const errorJson = JSON.parse(errorText);
+          errorDetails = errorJson.error || errorJson.details || errorText;
+          console.error('Parsed error details:', errorJson);
+        } catch (e) {
+          console.error('Could not parse error as JSON:', errorText);
+        }
+        
+        throw new Error(`Failed to post celebration: ${response.status} - ${errorDetails}`);
       }
       
       setIsTrailCompletionOpen(false);

@@ -318,17 +318,32 @@ export default function EventMapPage() {
 
   const handleCelebrationPost = async (message: string, photoFile: File | null) => {
     try {
-      // Convert user photo to marker format for proper identification
-      const userPhotoMarker = photoFile ? `[USER_PHOTO:${Date.now()}]` : null;
+      console.log('Photo file received:', photoFile ? 'Present' : 'None');
+      
+      // Store user photo in localStorage if provided
+      let imageUrl = null;
+      if (photoFile) {
+        const photoId = `USER_PHOTO_${Date.now()}`;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const photoData = e.target?.result as string;
+          localStorage.setItem(photoId, photoData);
+          console.log('Photo stored in localStorage with ID:', photoId);
+        };
+        reader.readAsDataURL(photoFile);
+        imageUrl = `[${photoId}]`; // Marker format for user photos
+      }
       
       const postData = {
-        userId: 'user-current',
+        userId: 'user-explorer',
         type: 'achievement',
         content: message,
         location: 'Science Park Trail - Jurong Lake Gardens',
-        imageUrl: userPhotoMarker,
+        imageUrl: imageUrl,
         likes: 0
       };
+
+      console.log('Posting celebration data:', postData);
 
       const response = await fetch('/api/posts', {
         method: 'POST',
@@ -339,17 +354,21 @@ export default function EventMapPage() {
       });
 
       if (response.ok) {
+        const responseData = await response.json();
+        console.log('Celebration post success:', responseData);
         toast({
           title: "Celebration Shared!",
           description: "Your trail completion has been posted to the community wall.",
         });
       } else {
-        throw new Error('Failed to post celebration');
+        const errorText = await response.text();
+        console.error('Failed to post celebration - Response:', response.status, errorText);
+        throw new Error(`Failed to post celebration: ${response.status}`);
       }
       
       setIsTrailCompletionOpen(false);
     } catch (error) {
-      console.error('Error posting celebration:', error);
+      console.error('Error posting to community:', error);
       toast({
         title: "Share Failed",
         description: "Unable to post to community wall. Please try again.",

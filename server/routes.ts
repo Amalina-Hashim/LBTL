@@ -141,7 +141,7 @@ export function registerRoutes(app: Express) {
     }
   });
 
-  app.post("/api/posts", async (req: Request, res: Response) => {
+  app.post("/api/posts", validate(insertPostSchema), async (req: Request, res: Response) => {
     console.log('POST /api/posts endpoint hit');
     console.log('Request headers:', req.headers);
     console.log('Request body:', req.body);

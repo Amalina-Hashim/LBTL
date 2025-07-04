@@ -110,6 +110,8 @@ Changelog:
 - July 04, 2025. Implemented complete community posting system with anonymous authentication - users can now share trail completions and vendor ratings to Community Wall without creating accounts. Trail completion celebration modal includes "Share to Community Wall" feature for achievement posts
 - July 04, 2025. Added "Rate Event" functionality with dedicated button in header - users can now rate the overall Lights by the Lake event experience and have ratings automatically posted to Community Wall
 - July 04, 2025. Optimized all modal sizes (EventRatingModal, TrailCompletionModal, PinDetailModal) to max-w-sm and max-h-[85vh] for better desktop viewing experience
+- July 04, 2025. Fixed completion counter tracking system and ensured completed trail pins turn yellow on map with proper state synchronization between pins array and completedPins set
+- July 04, 2025. Implemented proper community wall posting with validation for different post types: rating posts (no image, with star display) and achievement posts (with image, no stars). Added server-side validation for POST /api/posts endpoint
 
 ## User Preferences
 

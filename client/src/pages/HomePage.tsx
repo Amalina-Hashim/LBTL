@@ -52,7 +52,7 @@ export default function HomePage() {
                         <Calendar className="w-4 h-4 inline mr-1" />
                         Live Event
                       </span>
-                      <span className="ml-3 text-gray-600">Dec 15 - Jan 15, 2024</span>
+                      <span className="ml-3 text-gray-600">27 Sep - 12 Oct 2025</span>
                     </div>
                     <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
                       Lights by the Lake

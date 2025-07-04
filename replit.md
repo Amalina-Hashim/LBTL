@@ -113,6 +113,8 @@ Changelog:
 - July 04, 2025. Fixed completion counter tracking system and ensured completed trail pins turn yellow on map with proper state synchronization between pins array and completedPins set
 - July 04, 2025. Implemented proper community wall posting with validation for different post types: rating posts (no image, with star display) and achievement posts (with image, no stars). Added server-side validation for POST /api/posts endpoint
 - July 04, 2025. Fixed community wall posting validation error where null imageUrl values were rejected by Zod schema. Updated frontend to only include imageUrl field when photos are present, ensuring proper schema validation for both photo and text-only posts
+- July 04, 2025. Created comprehensive Completed Challenges page (/completed) with photo display and real-time timestamps. Made completion counter clickable to navigate to dedicated page showing all completed trail challenges as cards with completion photos, timestamps, and challenge details. Enhanced completion flow to save photo references and timestamps to localStorage for persistence
+- July 04, 2025. Updated event dates from "Dec 15 - Jan 15, 2024" to "27 Sep - 12 Oct 2025" throughout the application
 
 ## User Preferences
 

@@ -13,7 +13,7 @@ interface TrailCompletionModalProps {
   onClose: () => void;
   completedCount: number;
   totalCount: number;
-  onCelebrationPost: (message: string, photoFile: File | null) => void;
+  onCelebrationPost: (message: string, photoFile: File | null) => Promise<void>;
 }
 
 export default function TrailCompletionModal({ 
@@ -28,6 +28,7 @@ export default function TrailCompletionModal({
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [showCamera, setShowCamera] = useState(false);
   const [showSocialShare, setShowSocialShare] = useState(false);
+  const [isPosting, setIsPosting] = useState(false);
 
   const achievements = [
     { icon: Target, label: "Trail Explorer", description: "Completed all Science Park Trail challenges" },
@@ -45,14 +46,23 @@ export default function TrailCompletionModal({
     setShowCamera(false);
   };
 
-  const handleShareToCommunity = () => {
-    if (message.trim()) {
-      onCelebrationPost(message, photoFile);
-      toast({
-        title: "Shared to Community!",
-        description: "Your trail completion has been posted to the community wall.",
-      });
-      onClose();
+  const handleShareToCommunity = async () => {
+    if (message.trim() && !isPosting) {
+      setIsPosting(true);
+      try {
+        await onCelebrationPost(message, photoFile);
+        // Success handling is done in the parent component
+        // onClose(); // Don't close here, let the parent handle navigation
+      } catch (error) {
+        console.error('Error in TrailCompletionModal:', error);
+        toast({
+          title: "Error posting to Community Wall",
+          description: "There was an issue sharing your post. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsPosting(false);
+      }
     }
   };
 
@@ -167,10 +177,10 @@ export default function TrailCompletionModal({
                   <Button
                     onClick={handleShareToCommunity}
                     className="w-full"
-                    disabled={!message.trim()}
+                    disabled={!message.trim() || isPosting}
                   >
                     <Share2 className="w-4 h-4 mr-2" />
-                    Share to Community Wall
+                    {isPosting ? 'Posting...' : 'Share to Community Wall'}
                   </Button>
                   
                   <Button

@@ -260,6 +260,32 @@ export default function EventMapPage() {
       description: "Great job! Location marked as visited.",
     });
 
+    // Auto-create community post for trail completion
+    if (pins.find(p => p.id === pinId)?.type === 'trail') {
+      const pinName = pins.find(p => p.id === pinId)?.name;
+      const postData = {
+        userId: 'user-explorer',
+        type: 'completion',
+        content: `Just completed ${pinName}! 🎯 Amazing multimedia content and educational facts about lantern festivals!`,
+        location: pinName,
+        imageUrl: photoFile ? 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400' : null,
+        likes: 0
+      };
+
+      fetch('/api/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(postData),
+      }).then(response => {
+        if (response.ok) {
+          toast({
+            title: "Posted to Community!",
+            description: "Your trail completion was shared on the community wall.",
+          });
+        }
+      }).catch(console.error);
+    }
+
     trackAnalytics('pin_complete', { pinId, hasPhoto: !!photoFile });
   };
 
@@ -270,10 +296,37 @@ export default function EventMapPage() {
       ratings: prev.ratings + 1
     }));
 
-    toast({
-      title: "Rating Submitted!",
-      description: "Thank you for your feedback!",
-    });
+    // Auto-create community post for vendor rating
+    const pin = pins.find(p => p.id === pinId);
+    if (pin?.type === 'vendor') {
+      const postData = {
+        userId: 'user-explorer',
+        type: 'rating',
+        content: `${review} ${'⭐'.repeat(rating)} - ${pin.vendorName || pin.name}`,
+        location: pin.name,
+        pinId: pinId,
+        rating: rating,
+        likes: 0
+      };
+
+      fetch('/api/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(postData),
+      }).then(response => {
+        if (response.ok) {
+          toast({
+            title: "Rating Posted!",
+            description: "Your review was shared on the community wall.",
+          });
+        }
+      }).catch(console.error);
+    } else {
+      toast({
+        title: "Rating Submitted!",
+        description: "Thank you for your feedback!",
+      });
+    }
 
     trackAnalytics('vendor_rating', { pinId, rating, hasReview: !!review });
   };

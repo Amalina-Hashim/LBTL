@@ -60,10 +60,14 @@ export default function CommunityWallPage() {
                    post.userId === 'user-test' ? 'Anonymous User' : 'Explorer',
           location: post.location || 'Jurong Lake Gardens',
           timestamp: new Date(post.createdAt).toLocaleDateString(),
-          imageUrl: post.imageUrl?.startsWith('[USER_PHOTO:') 
-            ? null // User photo will be shown with special badge indicator
+          imageUrl: post.imageUrl?.startsWith('[USER_PHOTO_') 
+            ? (() => {
+                // Extract photo ID and get actual photo from localStorage
+                const photoId = post.imageUrl.slice(1, -1); // Remove [ and ]
+                return localStorage.getItem(photoId) || null;
+              })()
             : post.imageUrl || 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
-          isUserPhoto: post.imageUrl?.startsWith('[USER_PHOTO:') || false,
+          isUserPhoto: post.imageUrl?.startsWith('[USER_PHOTO_') || false,
           caption: post.content,
           likes: post.likes || 0,
           comments: Math.floor(Math.random() * 5) + 2,
@@ -241,29 +245,27 @@ export default function CommunityWallPage() {
                     </div>
                     
                     <div className="relative mb-4">
-                      {post.isUserPhoto ? (
-                        <div className="w-full h-64 bg-gradient-to-br from-blue-50 to-green-50 rounded-lg flex items-center justify-center border-2 border-dashed border-primary/30">
-                          <div className="text-center">
-                            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                              <Camera className="w-8 h-8 text-primary" />
+                      {post.imageUrl ? (
+                        <div className="relative">
+                          <img 
+                            src={post.imageUrl} 
+                            alt={`Post from ${post.location}`}
+                            className="w-full h-64 object-cover rounded-lg" 
+                          />
+                          {/* User photo badge */}
+                          {post.isUserPhoto && (
+                            <div className="absolute top-2 right-2 bg-green-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                              📸 User Photo
                             </div>
-                            <div className="text-primary font-semibold">User Photo</div>
-                            <div className="text-sm text-gray-600 mt-1">📸 Trail Explorer's Photo</div>
-                          </div>
+                          )}
                         </div>
-                      ) : post.imageUrl ? (
-                        <img 
-                          src={post.imageUrl} 
-                          alt={`Post from ${post.location}`}
-                          className="w-full h-64 object-cover rounded-lg" 
-                        />
                       ) : (
                         <div className="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center">
                           <div className="text-gray-400">No image</div>
                         </div>
                       )}
-                      {/* User photo badge */}
-                      {post.isUserPhoto && (
+                      {/* Legacy badge code - remove this section */}
+                      {false && (
                         <div className="absolute top-2 right-2 bg-green-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
                           📸 User Photo
                         </div>

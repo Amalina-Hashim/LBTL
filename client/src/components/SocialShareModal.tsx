@@ -210,13 +210,14 @@ export default function SocialShareModal({
                   // Debug: Log what photo URL we received
                   console.log('Photo URL received:', photoUrl);
                   
-                  // Handle photo URL - keep user's actual photo
+                  // Store user's actual photo data temporarily in localStorage for demo
                   let finalPhotoUrl = photoUrl;
                   if (photoUrl && photoUrl.startsWith('data:')) {
-                    // For now, indicate this is a user-uploaded photo
-                    // In production, this would be uploaded to Firebase Storage
-                    finalPhotoUrl = `[USER_PHOTO:${Date.now()}]`;
-                    console.log('Converted to user photo marker:', finalPhotoUrl);
+                    const photoId = `USER_PHOTO_${Date.now()}`;
+                    // Store the actual photo in localStorage
+                    localStorage.setItem(photoId, photoUrl);
+                    finalPhotoUrl = `[${photoId}]`;
+                    console.log('Stored user photo with ID:', photoId);
                   } else {
                     console.log('Photo URL does not start with data:', photoUrl);
                   }
@@ -226,10 +227,12 @@ export default function SocialShareModal({
                     type: postType || 'completion',
                     content: review,
                     location: locationName,
-                    rating: rating || null,
-                    imageUrl: finalPhotoUrl || null,
+                    ...(rating > 0 && { rating: rating }), // Only include rating if > 0
+                    ...(finalPhotoUrl && { imageUrl: finalPhotoUrl }), // Only include imageUrl if exists
                     likes: 0
                   };
+                  
+                  console.log('Posting data:', postData);
 
                   const response = await fetch('/api/posts', {
                     method: 'POST',

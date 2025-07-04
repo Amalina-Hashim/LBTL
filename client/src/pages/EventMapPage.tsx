@@ -373,7 +373,9 @@ export default function EventMapPage() {
           description: "Your event rating has been posted to the community wall.",
         });
       } else {
-        throw new Error('Failed to post rating');
+        const errorData = await response.json();
+        console.error('Server error:', errorData);
+        throw new Error(`Server error: ${response.status} - ${errorData.error}`);
       }
     } catch (error) {
       console.error('Error posting event rating:', error);

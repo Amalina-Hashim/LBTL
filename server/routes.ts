@@ -144,10 +144,14 @@ export function registerRoutes(app: Express) {
   app.post("/api/posts", validate(insertPostSchema), async (req: Request, res: Response) => {
     try {
       const postData = req.body;
+      console.log('Creating post with data:', postData);
       const post = await storage.createPost(postData);
+      console.log('Post created successfully:', post);
       return res.status(201).json({ post });
     } catch (error) {
-      return res.status(500).json({ error: "Failed to create post" });
+      console.error('Error creating post:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return res.status(500).json({ error: "Failed to create post", details: errorMessage });
     }
   });
 

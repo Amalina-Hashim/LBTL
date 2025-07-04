@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -38,18 +38,36 @@ export default function EventMapPage() {
 
   useEffect(() => {
     // Initialize map when component mounts
-    const leafletMap = initializeMap('map', JURONG_LAKE_BOUNDS.center, 16);
-    setMap(leafletMap);
+    const initMap = () => {
+      try {
+        const container = document.getElementById('map');
+        if (!container) {
+          console.error('Map container not found');
+          return;
+        }
+        
+        // Clear any existing map in the container
+        container.innerHTML = '';
+        
+        const leafletMap = initializeMap('map', JURONG_LAKE_BOUNDS.center, 16);
+        setMap(leafletMap);
 
-    // Track page view
-    trackAnalytics('page_view', { page: 'event_map' });
+        // Track page view
+        trackAnalytics('page_view', { page: 'event_map' });
 
-    // Cleanup
-    return () => {
-      if (leafletMap) {
-        leafletMap.remove();
+        return () => {
+          if (leafletMap) {
+            leafletMap.remove();
+          }
+        };
+      } catch (error) {
+        console.error('Error initializing map:', error);
       }
     };
+
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(initMap, 200);
+    return () => clearTimeout(timer);
   }, []);
 
   // Create a memoized pin click handler that captures current routing mode

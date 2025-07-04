@@ -41,8 +41,8 @@ export default function HomePage() {
                 <div className="md:flex">
                   <div className="md:w-1/2">
                     <img 
-                      src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
-                      alt="Colorful lantern festival display" 
+                      src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
+                      alt="Beautiful Chinese Garden at Jurong Lake Gardens with traditional pagoda and lanterns" 
                       className="w-full h-64 md:h-full object-cover" 
                     />
                   </div>

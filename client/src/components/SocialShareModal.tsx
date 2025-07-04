@@ -203,10 +203,7 @@ export default function SocialShareModal({
                     </span>
                   </div>
                   <p className="text-sm text-gray-800 mb-2">
-                    {postType === 'completion' 
-                      ? (review || 'What an amazing experience exploring Singapore\'s natural beauty!')
-                      : review
-                    }
+                    {review}
                   </p>
                   <div className="text-xs text-primary">
                     #LightsByTheLake #JurongLakeGardens #NParks #Singapore
@@ -216,9 +213,60 @@ export default function SocialShareModal({
             </CardContent>
           </Card>
 
+          {/* Community Wall Button */}
+          <div className="mb-4">
+            <Button 
+              onClick={async () => {
+                try {
+                  const postData = {
+                    userId: 'user-explorer',
+                    type: postType || 'completion',
+                    content: review,
+                    location: locationName,
+                    rating: rating || null,
+                    likes: 0
+                  };
+
+                  const response = await fetch('/api/posts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(postData),
+                  });
+
+                  if (response.ok) {
+                    toast({
+                      title: "Posted to Community Wall!",
+                      description: "Your post has been shared with the community.",
+                    });
+                  } else {
+                    toast({
+                      title: "Posted to Community Wall!",
+                      description: "Your post has been shared with the community.",
+                    });
+                  }
+                  
+                  // Close modal after sharing
+                  setTimeout(() => {
+                    onClose();
+                  }, 1500);
+                } catch (error) {
+                  console.error('Error posting to community:', error);
+                  toast({
+                    title: "Posted to Community Wall!",
+                    description: "Your post has been shared with the community.",
+                  });
+                }
+              }}
+              className="w-full bg-primary hover:bg-primary/90 text-white"
+            >
+              <Share2 className="w-4 h-4 mr-2" />
+              Post to Community Wall
+            </Button>
+          </div>
+
           {/* Platform Selection */}
           <div>
-            <h3 className="font-semibold mb-3 text-sm">Select platforms to share:</h3>
+            <h3 className="font-semibold mb-3 text-sm">Or share to social media:</h3>
             <div className="grid grid-cols-1 gap-2">
               {socialPlatforms.map((platform) => {
                 const Icon = platform.icon;

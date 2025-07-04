@@ -114,25 +114,29 @@ export default function EventMapPage() {
       <div className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center">
+            <div className="flex items-center min-w-0 flex-1">
               <Link href="/">
-                <Button variant="ghost" size="sm" className="mr-4">
+                <Button variant="ghost" size="sm" className="mr-2 sm:mr-4 flex-shrink-0">
                   <ArrowLeft className="w-5 h-5" />
                 </Button>
               </Link>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Lights by the Lake</h1>
-                <p className="text-gray-600">Science Park Trail Challenge</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">Lights by the Lake</h1>
+                <p className="text-sm sm:text-base text-gray-600 truncate">Science Park Trail Challenge</p>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="bg-primary text-white px-4 py-2 rounded-lg">
-                <span className="font-semibold">{completedCount}/{totalTrailPins} Completed</span>
+            <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
+              <div className="bg-primary text-white px-2 sm:px-4 py-1 sm:py-2 rounded-lg">
+                <span className="font-semibold text-xs sm:text-sm">{completedCount}/{totalTrailPins}</span>
+                <span className="hidden sm:inline"> Completed</span>
               </div>
               <Link href="/community">
-                <Button variant="outline">
+                <Button variant="outline" size="sm" className="hidden sm:flex">
                   <Users className="w-4 h-4 mr-2" />
                   Community
+                </Button>
+                <Button variant="outline" size="sm" className="sm:hidden">
+                  <Users className="w-4 h-4" />
                 </Button>
               </Link>
             </div>
@@ -152,28 +156,28 @@ export default function EventMapPage() {
 
       {/* Map Container */}
       <div className="relative">
-        <div id="map" className="w-full h-96 md:h-[500px]"></div>
+        <div id="map" className="w-full h-64 sm:h-80 md:h-96 lg:h-[500px]"></div>
         
-        {/* Map Legend */}
-        <Card className="absolute top-4 right-4 z-10">
-          <CardContent className="p-4">
-            <h3 className="font-semibold mb-2">Legend</h3>
-            <div className="space-y-2 text-sm">
+        {/* Map Legend - responsive positioning */}
+        <Card className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 max-w-[140px] sm:max-w-none">
+          <CardContent className="p-2 sm:p-4">
+            <h3 className="font-semibold mb-1 sm:mb-2 text-xs sm:text-sm">Legend</h3>
+            <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm">
               <div className="flex items-center">
-                <div className="w-4 h-4 bg-primary rounded-full mr-2"></div>
-                <span>Trail Points</span>
+                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-primary rounded-full mr-1 sm:mr-2"></div>
+                <span className="truncate">Trail Points</span>
               </div>
               <div className="flex items-center">
-                <div className="w-4 h-4 bg-yellow-500 rounded-full mr-2"></div>
-                <span>Completed</span>
+                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-yellow-500 rounded-full mr-1 sm:mr-2"></div>
+                <span className="truncate">Completed</span>
               </div>
               <div className="flex items-center">
-                <div className="w-4 h-4 bg-orange-500 rounded-full mr-2"></div>
-                <span>Food Vendors</span>
+                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-orange-500 rounded-full mr-1 sm:mr-2"></div>
+                <span className="truncate">Food Vendors</span>
               </div>
               <div className="flex items-center">
-                <div className="w-4 h-4 bg-purple-500 rounded-full mr-2"></div>
-                <span>Facilities</span>
+                <div className="w-3 h-3 sm:w-4 sm:h-4 bg-purple-500 rounded-full mr-1 sm:mr-2"></div>
+                <span className="truncate">Facilities</span>
               </div>
             </div>
           </CardContent>

@@ -84,10 +84,10 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto mx-4 sm:mx-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">{pin.name}</DialogTitle>
-          <p className="text-gray-600">{pin.description}</p>
+          <DialogTitle className="text-lg sm:text-xl font-bold pr-8">{pin.name}</DialogTitle>
+          <p className="text-sm sm:text-base text-gray-600">{pin.description}</p>
         </DialogHeader>
 
         <div className="space-y-6">
@@ -95,14 +95,14 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
             <>
               {/* QR Code Section */}
               <Card>
-                <CardContent className="p-4">
+                <CardContent className="p-3 sm:p-4">
                   <div className="text-center">
-                    <QrCode className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-                    <p className="text-gray-600 mb-4">Scan QR Code to check in</p>
+                    <QrCode className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 text-gray-400" />
+                    <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4">Scan QR Code to check in</p>
                     <Button
                       onClick={handleQRScan}
                       disabled={qrScanned}
-                      className={`w-full ${qrScanned ? 'bg-green-500 hover:bg-green-600' : 'bg-primary hover:bg-primary/90'}`}
+                      className={`w-full text-sm sm:text-base ${qrScanned ? 'bg-green-500 hover:bg-green-600' : 'bg-primary hover:bg-primary/90'}`}
                     >
                       {qrScanned ? (
                         <>
@@ -122,9 +122,9 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
 
               {/* Photo Upload Section */}
               <Card>
-                <CardContent className="p-4">
+                <CardContent className="p-3 sm:p-4">
                   <label className="block text-sm font-medium mb-2">Share Your Experience</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition-colors">
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-6 text-center hover:border-primary transition-colors">
                     <input
                       type="file"
                       ref={fileInputRef}
@@ -135,11 +135,12 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
                     
                     {!photoPreview ? (
                       <div>
-                        <Camera className="w-12 h-12 mx-auto mb-2 text-gray-400" />
-                        <p className="text-gray-600 mb-2">Take or upload a photo</p>
+                        <Camera className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 text-gray-400" />
+                        <p className="text-sm sm:text-base text-gray-600 mb-2">Take or upload a photo</p>
                         <Button
                           onClick={() => fileInputRef.current?.click()}
                           variant="outline"
+                          size="sm"
                         >
                           <Upload className="w-4 h-4 mr-2" />
                           Choose Photo
@@ -150,7 +151,7 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
                         <img
                           src={photoPreview}
                           alt="Preview"
-                          className="w-full h-48 object-cover rounded-lg mb-4"
+                          className="w-full h-32 sm:h-48 object-cover rounded-lg mb-4"
                         />
                         <Button
                           onClick={handleRemovePhoto}
@@ -167,16 +168,16 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
               </Card>
 
               {/* Action Buttons */}
-              <div className="flex space-x-4">
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                 <Button
                   onClick={handleComplete}
                   disabled={!canComplete}
-                  className="flex-1"
+                  className="flex-1 text-sm sm:text-base"
                 >
                   <Check className="w-4 h-4 mr-2" />
                   Complete Check-in
                 </Button>
-                <Button variant="outline" className="px-6">
+                <Button variant="outline" className="flex-1 sm:flex-none sm:px-6 text-sm sm:text-base">
                   <Send className="w-4 h-4 mr-2" />
                   Share
                 </Button>
@@ -188,7 +189,7 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
             <>
               {/* Rating Section */}
               <Card>
-                <CardContent className="p-4">
+                <CardContent className="p-3 sm:p-4">
                   <label className="block text-sm font-medium mb-2">Rate This Vendor</label>
                   <div className="flex justify-center mb-4">
                     <div className="flex space-x-1">
@@ -196,11 +197,11 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
                         <button
                           key={star}
                           onClick={() => setRating(star)}
-                          className={`text-2xl ${
+                          className={`text-xl sm:text-2xl ${
                             star <= rating ? 'text-yellow-400' : 'text-gray-300'
                           } hover:text-yellow-400 transition-colors`}
                         >
-                          <Star className="w-6 h-6" fill={star <= rating ? 'currentColor' : 'none'} />
+                          <Star className="w-5 h-5 sm:w-6 sm:h-6" fill={star <= rating ? 'currentColor' : 'none'} />
                         </button>
                       ))}
                     </div>
@@ -209,7 +210,7 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
                     value={review}
                     onChange={(e) => setReview(e.target.value)}
                     placeholder="Leave a review (optional)..."
-                    className="resize-none"
+                    className="resize-none text-sm sm:text-base"
                     rows={3}
                   />
                 </CardContent>
@@ -218,7 +219,7 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
               <Button
                 onClick={handleRateSubmit}
                 disabled={rating === 0}
-                className="w-full"
+                className="w-full text-sm sm:text-base"
               >
                 <Send className="w-4 h-4 mr-2" />
                 Submit Review

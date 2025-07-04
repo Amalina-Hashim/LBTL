@@ -24,6 +24,7 @@ export default function EventMapPage() {
     ratings: 8
   });
   const [routingMode, setRoutingMode] = useState(false);
+  const [routeCreated, setRouteCreated] = useState(false);
   const [routingControl, setRoutingControl] = useState<any>(null);
   const [startPoint, setStartPoint] = useState<L.LatLng | null>(null);
   const [endPoint, setEndPoint] = useState<L.LatLng | null>(null);
@@ -50,9 +51,17 @@ export default function EventMapPage() {
 
   // Create a memoized pin click handler that captures current routing mode
   const currentPinClickHandler = useCallback((pin: PinData) => {
-    console.log('Pin clicked:', pin.name, 'Routing mode (current):', routingMode);
+    console.log('Pin clicked:', pin.name, 'Routing mode (current):', routingMode, 'Route created:', routeCreated);
     
-    if (routingMode) {
+    // If routing mode is active but route is already created, allow normal pin interactions
+    if (routingMode && routeCreated) {
+      setSelectedPin(pin);
+      setIsModalOpen(true);
+      trackAnalytics('pin_click', { pinId: pin.id, pinType: pin.type });
+      return;
+    }
+    
+    if (routingMode && !routeCreated) {
       const pinLatLng = L.latLng(pin.lat, pin.lng);
       console.log('Creating LatLng:', pinLatLng);
       
@@ -67,19 +76,10 @@ export default function EventMapPage() {
         setEndPoint(pinLatLng);
         console.log('Setting end point and creating route');
         createRoute(startPoint, pinLatLng);
+        setRouteCreated(true);
         toast({
           title: "Route Created",
-          description: `Route planned to ${pin.name}`,
-        });
-      } else {
-        // Reset and start new route
-        console.log('Resetting route and starting new one');
-        clearRoute();
-        setStartPoint(pinLatLng);
-        setEndPoint(null);
-        toast({
-          title: "New Route Started",
-          description: `Starting new route from ${pin.name}`,
+          description: `Route planned to ${pin.name}. You can now click pins to explore them!`,
         });
       }
     } else {
@@ -87,7 +87,7 @@ export default function EventMapPage() {
       setIsModalOpen(true);
       trackAnalytics('pin_click', { pinId: pin.id, pinType: pin.type });
     }
-  }, [routingMode, startPoint, endPoint, map]);
+  }, [routingMode, routeCreated, startPoint, endPoint, map]);
 
   // Separate effect to handle pins and routing mode changes
   useEffect(() => {
@@ -186,6 +186,7 @@ export default function EventMapPage() {
     }
     setStartPoint(null);
     setEndPoint(null);
+    setRouteCreated(false);
   };
 
   const toggleRoutingMode = () => {
@@ -405,20 +406,38 @@ export default function EventMapPage() {
           <div className="absolute bottom-4 left-4 z-10">
             <Card className="border-blue-500 bg-blue-50">
               <CardContent className="p-3">
-                <div className="flex items-center space-x-2 text-blue-800">
-                  <Navigation className="w-5 h-5" />
-                  <div>
-                    <div className="font-medium text-sm">Route Planning Active</div>
-                    {!startPoint && (
-                      <div className="text-xs text-blue-700">Click first pin to set start point</div>
-                    )}
-                    {startPoint && !endPoint && (
-                      <div className="text-xs text-blue-700">Click second pin to create route</div>
-                    )}
-                    {startPoint && endPoint && (
-                      <div className="text-xs text-blue-700">Click another pin to start new route</div>
-                    )}
+                <div className="flex items-center justify-between space-x-2 text-blue-800">
+                  <div className="flex items-center space-x-2">
+                    <Navigation className="w-5 h-5" />
+                    <div>
+                      <div className="font-medium text-sm">Route Planning Active</div>
+                      {!startPoint && !routeCreated && (
+                        <div className="text-xs text-blue-700">Click first pin to set start point</div>
+                      )}
+                      {startPoint && !endPoint && !routeCreated && (
+                        <div className="text-xs text-blue-700">Click second pin to create route</div>
+                      )}
+                      {routeCreated && (
+                        <div className="text-xs text-blue-700">Route created! Click pins to explore them</div>
+                      )}
+                    </div>
                   </div>
+                  {routeCreated && (
+                    <Button 
+                      onClick={() => {
+                        clearRoute();
+                        toast({
+                          title: "Plan New Route",
+                          description: "Click two pins to create a new route",
+                        });
+                      }} 
+                      variant="outline" 
+                      size="sm"
+                      className="text-xs px-2 py-1"
+                    >
+                      New Route
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>

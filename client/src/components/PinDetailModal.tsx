@@ -56,16 +56,22 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
 
   const handleCameraCapture = () => {
     if (fileInputRef.current) {
-      // Set input to capture from camera (rear camera for mobile)
+      // Reset the input first
+      fileInputRef.current.value = '';
+      // Set capture attribute for camera
       fileInputRef.current.setAttribute('capture', 'environment');
+      fileInputRef.current.setAttribute('accept', 'image/*');
       fileInputRef.current.click();
     }
   };
 
   const handleGallerySelect = () => {
     if (fileInputRef.current) {
+      // Reset the input first
+      fileInputRef.current.value = '';
       // Remove capture attribute for gallery selection
       fileInputRef.current.removeAttribute('capture');
+      fileInputRef.current.setAttribute('accept', 'image/*');
       fileInputRef.current.click();
     }
   };

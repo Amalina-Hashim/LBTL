@@ -227,12 +227,18 @@ export default function SocialShareModal({
             <Button 
               onClick={async () => {
                 try {
+                  // Debug: Log what photo URL we received
+                  console.log('Photo URL received:', photoUrl);
+                  
                   // Handle photo URL - keep user's actual photo
                   let finalPhotoUrl = photoUrl;
                   if (photoUrl && photoUrl.startsWith('data:')) {
                     // For now, indicate this is a user-uploaded photo
                     // In production, this would be uploaded to Firebase Storage
                     finalPhotoUrl = `[USER_PHOTO:${Date.now()}]`;
+                    console.log('Converted to user photo marker:', finalPhotoUrl);
+                  } else {
+                    console.log('Photo URL does not start with data:', photoUrl);
                   }
 
                   const postData = {

@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Heart, MessageCircle, Share2, User } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Share2, User, RefreshCw } from "lucide-react";
 import { SiFacebook, SiInstagram } from "react-icons/si";
 import { getPosts, trackAnalytics } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
@@ -29,6 +29,17 @@ export default function CommunityWallPage() {
   useEffect(() => {
     loadPosts();
     trackAnalytics('page_view', { page: 'community_wall' });
+  }, []);
+
+  // Auto-refresh posts every 10 seconds when page is visible
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        loadPosts();
+      }
+    }, 10000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const loadPosts = async () => {
@@ -165,6 +176,21 @@ export default function CommunityWallPage() {
               </div>
             </div>
             <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  loadPosts();
+                  toast({
+                    title: "Refreshed!",
+                    description: "Community posts have been updated."
+                  });
+                }}
+                className="flex items-center gap-2"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Refresh
+              </Button>
               <Select value={selectedLocation} onValueChange={setSelectedLocation}>
                 <SelectTrigger className="w-48">
                   <SelectValue placeholder="Filter by location" />

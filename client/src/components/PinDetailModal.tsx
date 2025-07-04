@@ -3,9 +3,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { X, Camera, Upload, Trash2, Check, QrCode, Star, Send } from "lucide-react";
+import { X, Camera, Upload, Trash2, Check, QrCode, Star, Send, Share2 } from "lucide-react";
 import { PinData } from "@/data/pinData";
 import { useToast } from "@/hooks/use-toast";
+import SocialShareModal from "./SocialShareModal";
 
 interface PinDetailModalProps {
   pin: PinData | null;
@@ -21,6 +22,7 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
+  const [showSocialShare, setShowSocialShare] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -62,8 +64,19 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
   const handleRateSubmit = () => {
     if (pin && rating > 0) {
       onRate(pin.id, rating, review);
-      handleClose();
+      
+      // Show social sharing modal after successful rating
+      if (review.trim()) {
+        setShowSocialShare(true);
+      } else {
+        handleClose();
+      }
     }
+  };
+
+  const handleSocialShareClose = () => {
+    setShowSocialShare(false);
+    handleClose();
   };
 
   const handleClose = () => {
@@ -72,6 +85,7 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
     setPhotoPreview(null);
     setRating(0);
     setReview("");
+    setShowSocialShare(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -177,8 +191,13 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
                   <Check className="w-4 h-4 mr-2" />
                   Complete Check-in
                 </Button>
-                <Button variant="outline" className="flex-1 sm:flex-none sm:px-6 text-sm sm:text-base">
-                  <Send className="w-4 h-4 mr-2" />
+                <Button 
+                  variant="outline" 
+                  className="flex-1 sm:flex-none sm:px-6 text-sm sm:text-base"
+                  onClick={() => setShowSocialShare(true)}
+                  disabled={!canComplete}
+                >
+                  <Share2 className="w-4 h-4 mr-2" />
                   Share
                 </Button>
               </div>
@@ -242,6 +261,18 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
           )}
         </div>
       </DialogContent>
+      
+      {/* Social Sharing Modal */}
+      <SocialShareModal
+        isOpen={showSocialShare}
+        onClose={handleSocialShareClose}
+        rating={pin.type === 'vendor' ? rating : undefined}
+        review={pin.type === 'vendor' ? review : `Just completed the ${pin.name} challenge! 🎉`}
+        locationName={pin.name}
+        userName="Nature Explorer"
+        photoUrl={photoPreview || undefined}
+        postType={pin.type === 'vendor' ? 'rating' : 'completion'}
+      />
     </Dialog>
   );
 }

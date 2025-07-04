@@ -140,7 +140,10 @@ export default function EventMapPage() {
   };
 
   const toggleRoutingMode = () => {
-    setRoutingMode(!routingMode);
+    const newRoutingMode = !routingMode;
+    console.log('Toggling routing mode from', routingMode, 'to', newRoutingMode);
+    setRoutingMode(newRoutingMode);
+    
     if (routingMode) {
       clearRoute();
     }

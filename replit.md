@@ -104,6 +104,7 @@ Changelog:
 - July 04, 2025. Enhanced social sharing to create community posts when users share achievements
 - July 04, 2025. Renamed all trail points to "Science Park Trail Challenge" format for better branding
 - July 04, 2025. Added authentic Lights by the Lake event trail locations with projection mapping and special installations based on real NParks event data
+- July 04, 2025. Updated facility pins with accurate Jurong Lake Gardens locations including North/South Carparks, Clusia Cove toilet, Forest Ramble toilet, Japanese Garden toilet, Entrance Pavilion, and Water Lily Pavilion. Made facility icons smaller (24x24px) for better map visibility
 
 ## User Preferences
 

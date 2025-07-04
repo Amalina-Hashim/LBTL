@@ -132,15 +132,42 @@ export const pinData: PinData[] = [
   },
   {
     id: "14",
-    name: "Chinese Garden Toilet",
-    description: "Public restroom facilities near Chinese Garden entrance",
-    lat: 1.3385,
-    lng: 103.7255,
+    name: "North Carpark",
+    description: "Main parking area near Forest Ramble and Clusia Cove (173 car lots)",
+    lat: 1.3420,
+    lng: 103.7235,
     type: "facility",
     completed: false
   },
   {
     id: "15",
+    name: "South Carpark",
+    description: "Parking area near ActiveSG and Grasslands (171 car lots)",
+    lat: 1.3365,
+    lng: 103.7230,
+    type: "facility",
+    completed: false
+  },
+  {
+    id: "16",
+    name: "Clusia Cove Toilet",
+    description: "Restroom facilities with changing areas at water play area",
+    lat: 1.3425,
+    lng: 103.7240,
+    type: "facility",
+    completed: false
+  },
+  {
+    id: "17",
+    name: "Forest Ramble Toilet",
+    description: "Restroom between Otter Play and Monkey Play areas with nursing room",
+    lat: 1.3415,
+    lng: 103.7245,
+    type: "facility",
+    completed: false
+  },
+  {
+    id: "18",
     name: "Japanese Garden Toilet",
     description: "Public restroom facilities in Japanese Garden area",
     lat: 1.3398,
@@ -149,47 +176,20 @@ export const pinData: PinData[] = [
     completed: false
   },
   {
-    id: "16",
-    name: "Lakeside Carpark A",
-    description: "Main parking area near lake entrance",
-    lat: 1.3375,
-    lng: 103.7235,
-    type: "facility",
-    completed: false
-  },
-  {
-    id: "17",
-    name: "Chinese Garden Carpark",
-    description: "Parking area near Chinese Garden entrance",
-    lat: 1.3382,
-    lng: 103.7252,
-    type: "facility",
-    completed: false
-  },
-  {
-    id: "18",
-    name: "Shelter Pavilion 1",
-    description: "Covered seating area with benches",
-    lat: 1.3392,
-    lng: 103.7262,
-    type: "facility",
-    completed: false
-  },
-  {
     id: "19",
-    name: "Shelter Pavilion 2",
-    description: "Covered rest area with lake views",
-    lat: 1.3408,
-    lng: 103.7272,
+    name: "Entrance Pavilion",
+    description: "Main visitor information center with maps and guides",
+    lat: 1.3410,
+    lng: 103.7225,
     type: "facility",
     completed: false
   },
   {
     id: "20",
-    name: "Visitor Information Center",
-    description: "Maps, guides and visitor assistance",
-    lat: 1.3378,
-    lng: 103.7248,
+    name: "Water Lily Pavilion",
+    description: "Lakeside visitor services location with staff assistance",
+    lat: 1.3380,
+    lng: 103.7265,
     type: "facility",
     completed: false
   }

@@ -38,11 +38,27 @@ export default function EventMapPage() {
   const [endMarker, setEndMarker] = useState<L.Marker | null>(null);
   const { toast } = useToast();
 
-  // Initialize completed pins from pin data
+  // Initialize completed pins from localStorage and pin data
   useEffect(() => {
-    const completedPinIds = pins.filter(pin => pin.completed).map(pin => pin.id);
-    setCompletedPins(new Set(completedPinIds));
-  }, [pins]);
+    const savedCompletedPins = localStorage.getItem('completedPins');
+    const completedPinIds = savedCompletedPins ? JSON.parse(savedCompletedPins) : [];
+    
+    // Also check pin data for any pre-completed pins
+    const preCompletedPins = pins.filter(pin => pin.completed).map(pin => pin.id);
+    const allCompletedPins = Array.from(new Set([...completedPinIds, ...preCompletedPins]));
+    
+    setCompletedPins(new Set(allCompletedPins));
+    
+    // Update pins array to reflect completion status
+    setPins(prevPins => 
+      prevPins.map(pin => ({
+        ...pin,
+        completed: allCompletedPins.includes(pin.id)
+      }))
+    );
+    
+    console.log('Initialized completed pins from storage:', allCompletedPins);
+  }, []);
 
   // Update map markers when pin completion status changes
   useEffect(() => {
@@ -267,6 +283,11 @@ export default function EventMapPage() {
       const newSet = new Set(prev);
       newSet.add(pinId);
       console.log('Updated completedPins set:', Array.from(newSet));
+      
+      // Save to localStorage for persistence
+      localStorage.setItem('completedPins', JSON.stringify(Array.from(newSet)));
+      console.log('Saved completed pins to localStorage:', Array.from(newSet));
+      
       return newSet;
     });
     

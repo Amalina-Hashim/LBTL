@@ -173,7 +173,6 @@ export default function PinDetailModal({ pin, isOpen, onClose, onComplete, onRat
                       <div>
                         <Camera className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 text-gray-400" />
                         <p className="text-sm sm:text-base text-gray-600 mb-4">Capture or upload a photo</p>
-                        <p className="text-xs text-gray-500 mb-3">📱 On mobile: "Take Photo" opens your camera</p>
                         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
                           <Button
                             onClick={handleCameraCapture}

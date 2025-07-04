@@ -129,5 +129,68 @@ export const pinData: PinData[] = [
     lng: 103.7273,
     type: "event", 
     completed: false
+  },
+  {
+    id: "14",
+    name: "Chinese Garden Toilet",
+    description: "Public restroom facilities near Chinese Garden entrance",
+    lat: 1.3385,
+    lng: 103.7255,
+    type: "facility",
+    completed: false
+  },
+  {
+    id: "15",
+    name: "Japanese Garden Toilet",
+    description: "Public restroom facilities in Japanese Garden area",
+    lat: 1.3398,
+    lng: 103.7278,
+    type: "facility",
+    completed: false
+  },
+  {
+    id: "16",
+    name: "Lakeside Carpark A",
+    description: "Main parking area near lake entrance",
+    lat: 1.3375,
+    lng: 103.7235,
+    type: "facility",
+    completed: false
+  },
+  {
+    id: "17",
+    name: "Chinese Garden Carpark",
+    description: "Parking area near Chinese Garden entrance",
+    lat: 1.3382,
+    lng: 103.7252,
+    type: "facility",
+    completed: false
+  },
+  {
+    id: "18",
+    name: "Shelter Pavilion 1",
+    description: "Covered seating area with benches",
+    lat: 1.3392,
+    lng: 103.7262,
+    type: "facility",
+    completed: false
+  },
+  {
+    id: "19",
+    name: "Shelter Pavilion 2",
+    description: "Covered rest area with lake views",
+    lat: 1.3408,
+    lng: 103.7272,
+    type: "facility",
+    completed: false
+  },
+  {
+    id: "20",
+    name: "Visitor Information Center",
+    description: "Maps, guides and visitor assistance",
+    lat: 1.3378,
+    lng: 103.7248,
+    type: "facility",
+    completed: false
   }
 ];

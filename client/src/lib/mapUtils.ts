@@ -4,6 +4,9 @@ import 'leaflet-routing-machine';
 export const createCustomIcon = (type: string, completed: boolean = false) => {
   let iconColor = '#00703c'; // Default NEAR green
   let iconClass = 'fas fa-map-marker-alt';
+  let iconSize: [number, number] = [32, 32];
+  let iconAnchor: [number, number] = [16, 16];
+  let cssClass = 'w-8 h-8';
   
   if (completed) {
     iconColor = '#ffc107'; // Yellow for completed
@@ -14,18 +17,22 @@ export const createCustomIcon = (type: string, completed: boolean = false) => {
   } else if (type === 'facility') {
     iconColor = '#8b5cf6'; // Purple for facilities
     iconClass = 'fas fa-info-circle';
+    // Make facility icons smaller
+    iconSize = [24, 24] as [number, number];
+    iconAnchor = [12, 12] as [number, number];
+    cssClass = 'w-6 h-6';
   } else if (type === 'event') {
     iconColor = '#2563eb'; // Blue for event locations
     iconClass = 'fas fa-star';
   }
 
   return L.divIcon({
-    html: `<div style="background-color: ${iconColor};" class="w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
-             <i class="${iconClass} text-white text-sm"></i>
+    html: `<div style="background-color: ${iconColor};" class="${cssClass} rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+             <i class="${iconClass} text-white text-xs"></i>
            </div>`,
     className: 'custom-marker',
-    iconSize: [32, 32],
-    iconAnchor: [16, 16]
+    iconSize: iconSize,
+    iconAnchor: iconAnchor
   });
 };
 

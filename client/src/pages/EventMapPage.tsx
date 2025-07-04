@@ -57,16 +57,29 @@ export default function EventMapPage() {
   }, []);
 
   const createRoute = (start: L.LatLng, end: L.LatLng) => {
-    if (!map) return;
+    console.log('createRoute called with:', start, end);
+    if (!map) {
+      console.log('No map available');
+      return;
+    }
+
+    console.log('Map available, creating route');
 
     // Clear existing route
     if (routingControl) {
+      console.log('Removing existing route');
       map.removeLayer(routingControl);
     }
 
     // Clear existing markers
-    if (startMarker) map.removeLayer(startMarker);
-    if (endMarker) map.removeLayer(endMarker);
+    if (startMarker) {
+      console.log('Removing existing start marker');
+      map.removeLayer(startMarker);
+    }
+    if (endMarker) {
+      console.log('Removing existing end marker');
+      map.removeLayer(endMarker);
+    }
 
     // Create start marker (green)
     const startIcon = L.divIcon({
@@ -141,17 +154,22 @@ export default function EventMapPage() {
   };
 
   const handlePinClick = (pin: PinData) => {
+    console.log('Pin clicked:', pin.name, 'Routing mode:', routingMode);
+    
     if (routingMode) {
       const pinLatLng = L.latLng(pin.lat, pin.lng);
+      console.log('Creating LatLng:', pinLatLng);
       
       if (!startPoint) {
         setStartPoint(pinLatLng);
+        console.log('Setting start point:', pinLatLng);
         toast({
           title: "Start Point Set",
           description: `Starting route from ${pin.name}`,
         });
       } else if (!endPoint) {
         setEndPoint(pinLatLng);
+        console.log('Setting end point and creating route');
         createRoute(startPoint, pinLatLng);
         toast({
           title: "Route Created",
@@ -159,6 +177,7 @@ export default function EventMapPage() {
         });
       } else {
         // Reset and start new route
+        console.log('Resetting route and starting new one');
         clearRoute();
         setStartPoint(pinLatLng);
         setEndPoint(null);

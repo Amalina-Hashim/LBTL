@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Heart, MessageCircle, Share2, User, RefreshCw } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Share2, User, RefreshCw, Camera } from "lucide-react";
 import { SiFacebook, SiInstagram } from "react-icons/si";
 import { getPosts, trackAnalytics } from "@/lib/firebase";
 import { useToast } from "@/hooks/use-toast";
@@ -13,11 +13,12 @@ interface CommunityPost {
   username: string;
   location: string;
   timestamp: string;
-  imageUrl: string;
+  imageUrl: string | null;
   caption: string;
   likes: number;
   comments: number;
   createdAt: Date;
+  isUserPhoto?: boolean;
 }
 
 export default function CommunityWallPage() {
@@ -60,8 +61,9 @@ export default function CommunityWallPage() {
           location: post.location || 'Jurong Lake Gardens',
           timestamp: new Date(post.createdAt).toLocaleDateString(),
           imageUrl: post.imageUrl?.startsWith('[USER_PHOTO:') 
-            ? 'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?w=400&h=300&fit=crop&q=80&auto=format' 
+            ? null // User photo will be shown with special badge indicator
             : post.imageUrl || 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+          isUserPhoto: post.imageUrl?.startsWith('[USER_PHOTO:') || false,
           caption: post.content,
           likes: post.likes || 0,
           comments: Math.floor(Math.random() * 5) + 2,
@@ -239,13 +241,29 @@ export default function CommunityWallPage() {
                     </div>
                     
                     <div className="relative mb-4">
-                      <img 
-                        src={post.imageUrl} 
-                        alt={`Post from ${post.location}`}
-                        className="w-full h-64 object-cover rounded-lg" 
-                      />
-                      {/* Check if this is a user-uploaded photo */}
-                      {post.imageUrl?.includes('photo-1606041008023') && (
+                      {post.isUserPhoto ? (
+                        <div className="w-full h-64 bg-gradient-to-br from-blue-50 to-green-50 rounded-lg flex items-center justify-center border-2 border-dashed border-primary/30">
+                          <div className="text-center">
+                            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                              <Camera className="w-8 h-8 text-primary" />
+                            </div>
+                            <div className="text-primary font-semibold">User Photo</div>
+                            <div className="text-sm text-gray-600 mt-1">📸 Trail Explorer's Photo</div>
+                          </div>
+                        </div>
+                      ) : post.imageUrl ? (
+                        <img 
+                          src={post.imageUrl} 
+                          alt={`Post from ${post.location}`}
+                          className="w-full h-64 object-cover rounded-lg" 
+                        />
+                      ) : (
+                        <div className="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+                          <div className="text-gray-400">No image</div>
+                        </div>
+                      )}
+                      {/* User photo badge */}
+                      {post.isUserPhoto && (
                         <div className="absolute top-2 right-2 bg-green-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
                           📸 User Photo
                         </div>
